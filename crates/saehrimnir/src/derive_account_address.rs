@@ -19,7 +19,7 @@ pub struct Account {
     pub mnemonic_id: MnemonicID,
 }
 
-trait ToHex {
+pub trait ToHex {
     fn to_hex(&self) -> String;
 }
 impl ToHex for Ed25519PrivateKey {
@@ -83,7 +83,7 @@ pub fn derive_account(
 mod tests {
     use bip39::Mnemonic;
 
-    use crate::{derive_account_address::ToHex, prelude::*};
+    use crate::prelude::*;
 
     fn test(
         mnemonic: Mnemonic,

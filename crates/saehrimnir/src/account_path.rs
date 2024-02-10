@@ -1,4 +1,3 @@
-use crate::bip32_path::*;
 use crate::prelude::*;
 
 /// A HD Path component value, e.g. "1022" being the
@@ -51,8 +50,8 @@ pub type EntityIndex = u32;
 /// `"m/44H/1022H/1H/525H/1460H/1H"`.
 ///
 /// ```
-/// extern crate lib;
-/// use lib::prelude::*;
+/// extern crate saehrimnir;
+/// use saehrimnir::prelude::*;
 ///
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
 /// ```
