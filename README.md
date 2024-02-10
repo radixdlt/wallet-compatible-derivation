@@ -16,7 +16,7 @@ let path = AccountPath::new(
 let mnemonic: Mnemonic = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 
 // Derive Babylon Radix account...
-let account = derive_account(&mnemonic, "radix", &path).unwrap();
+let account = derive_account(&mnemonic, "radix", &path);
 
 // ... containing the Account Address
 assert_eq!(account.address, "account_rdx12yy8n09a0w907vrjyj4hws2yptrm3rdjv84l9sr24e3w7pk7nuxst8");

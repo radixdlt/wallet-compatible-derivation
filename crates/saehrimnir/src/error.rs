@@ -12,7 +12,7 @@ pub enum Error {
     #[error("Unsupported or unknown Network ID: '{0}'")]
     UnsupportedOrUnknownNetworkID(HDPathComponentValue),
 
-      #[error("Unsupported or unknown Network ID: '{0}'")]
+    #[error("Unsupported or unknown Network ID: '{0}'")]
     UnsupportedOrUnknownNetworkIDFromStr(String),
 
     #[error("Invalid BIP32 HD path: '{0}'")]

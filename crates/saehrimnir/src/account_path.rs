@@ -104,7 +104,7 @@ impl TryFrom<BIP32Path> for AccountPath {
         assert_value(0, PURPOSE)?;
         assert_value(1, COINTYPE)?;
         assert_with(2, |v| {
-            [NetworkID::Mainnet, NetworkID::Stokenet]
+            NetworkID::all()
                 .into_iter()
                 .map(|n| n.hardened_hd_component_value())
                 .any(|c| c == v)

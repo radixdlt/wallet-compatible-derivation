@@ -1,24 +1,24 @@
 use radix_engine_common::network::NetworkDefinition;
+use strum_macros::{Display, EnumString};
 
 use crate::prelude::*;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display)]
+#[derive(
+    Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, EnumString, Display, enum_iterator::Sequence,
+)]
 pub enum NetworkID {
-    #[display("mainnet")]
+    #[strum(ascii_case_insensitive)]
     Mainnet,
-    #[display("stokenet")]
+    #[strum(ascii_case_insensitive)]
     Stokenet,
 }
 
-impl FromStr for NetworkID {
-    type Err = crate::Error;
-
-    fn from_str(s: &str) -> radix_engine_common::prelude::Result<Self, Self::Err> {
-        s.parse::<HDPathComponentValue>()
-            .map_err(|_| Error::UnsupportedOrUnknownNetworkIDFromStr(s.to_owned()))
-            .and_then(Self::try_from)
+impl NetworkID {
+    pub fn all() -> Vec<NetworkID> {
+        enum_iterator::all::<NetworkID>().collect::<Vec<_>>()
     }
 }
+
 impl TryFrom<HDPathComponentValue> for NetworkID {
     type Error = crate::Error;
 
