@@ -6,9 +6,14 @@ use radix_engine_common::{
     types::ComponentAddress,
 };
 
+/// A safe to use hex encoding of the hash of a public key at a special node in your BIP39 Seed,
+/// This ID is used to identify that two accounts have been derived from the same mnemonic.
+/// Since it is the hash of a public key it does not reveal any secrets.
+/// And the public key is not the public key of any account signing key, a
+/// special derivation path which is different from that of accounts have been used
+/// to derive this key pair.
 #[derive(Clone, Debug, PartialEq, Eq, derive_more::Display)]
 pub struct FactorSourceID(String);
-
 
 pub trait ToHex {
     fn to_hex(&self) -> String;
