@@ -105,5 +105,5 @@ fn main() {
     println!("Input config: {}", config);
     let account_path = AccountPath::new(config.network_id, config.index);
     let account = derive_account(&config.mnemonic, config.passphrase, &account_path);
-    println!("Account: {}", account);
+    println!("Account:\n{}", account);
 }
