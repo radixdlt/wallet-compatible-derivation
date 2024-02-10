@@ -15,7 +15,7 @@ Generate Radix Babylon accounts - private (and public) keys and addresses given 
 )]
 struct Cli {
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -93,7 +93,7 @@ fn paged() {
 
 fn main() {
     let cli = Cli::parse();
-    let config = match cli.command {
+    let config = match cli.command.unwrap_or(Commands::Pager) {
         Commands::NoPager(c) => Ok(c),
         Commands::Pager => {
             paged();
