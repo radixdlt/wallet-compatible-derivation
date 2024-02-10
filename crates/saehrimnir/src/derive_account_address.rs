@@ -53,6 +53,9 @@ fn factor_source_id(seed: &[u8]) -> FactorSourceID {
     FactorSourceID(hex)
 }
 
+/// Derives a simple [`Account`] using the `mnemonic` and BIP39 `passphrase` (can be the empty string) using the hierarchical deterministic derivation path `path`.
+/// 
+/// See [`Account`] for more details, but in short it is an Address + key pair.
 pub fn derive_account(
     mnemonic: &Mnemonic,
     passphrase: impl AsRef<str>,
