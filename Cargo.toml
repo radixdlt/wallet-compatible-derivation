@@ -1,3 +1,6 @@
 [workspace]
 resolver = "2"
 members = ["crates/saehrimnir", "crates/bacon"]
+
+[workspace.dependencies]
+thiserror = { version = "1.0.56" }

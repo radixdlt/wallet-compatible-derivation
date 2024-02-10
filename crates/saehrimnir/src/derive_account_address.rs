@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use bip39::Mnemonic;
 
 use radix_engine_common::{
     address::AddressBech32Encoder,
@@ -8,7 +7,7 @@ use radix_engine_common::{
 };
 
 #[derive(Clone, Debug, PartialEq, Eq, derive_more::Display)]
-pub struct MnemonicID(String);
+pub struct FactorSourceID(String);
 
 pub struct Account {
     pub network_id: NetworkID,
@@ -16,7 +15,7 @@ pub struct Account {
     pub public_key: Ed25519PublicKey,
     pub address: String,
     pub path: AccountPath,
-    pub mnemonic_id: MnemonicID,
+    pub factor_source_id: FactorSourceID,
 }
 
 pub trait ToHex {
@@ -47,14 +46,14 @@ fn derive_ed25519_private_key(seed: &[u8], path: &slip10::path::BIP32Path) -> Ed
         .expect("Should always be able to create Ed25519PrivateKey from derived key.")
 }
 
-fn mnemonic_id(seed: &[u8]) -> MnemonicID {
+fn factor_source_id(seed: &[u8]) -> FactorSourceID {
     let components: Vec<HDPathComponentValue> = vec![PURPOSE, COINTYPE, harden(365)];
     let path = slip10::path::BIP32Path::from(components);
     let private_key = derive_ed25519_private_key(seed, &path);
     let public_key = private_key.public_key();
     let hash = blake2b_256_hash(&public_key.to_vec());
     let hex = hex::encode(hash);
-    MnemonicID(hex)
+    FactorSourceID(hex)
 }
 
 pub fn derive_account(
@@ -64,7 +63,7 @@ pub fn derive_account(
 ) -> Result<Account, Error> {
     let network_id = path.network_id();
     let seed = mnemonic.to_seed(passphrase.as_ref());
-    let mnemonic_id = mnemonic_id(&seed);
+    let factor_source_id = factor_source_id(&seed);
     let private_key = derive_ed25519_private_key(&seed, &path.0 .0);
     let public_key = private_key.public_key();
     let address = derive_address(&public_key, network_id);
@@ -75,13 +74,12 @@ pub fn derive_account(
         public_key,
         address,
         path: path.clone(),
-        mnemonic_id,
+        factor_source_id,
     })
 }
 
 #[cfg(test)]
 mod tests {
-    use bip39::Mnemonic;
 
     use crate::prelude::*;
 
@@ -92,14 +90,17 @@ mod tests {
         path: impl AsRef<str>,
         private_key: impl AsRef<str>,
         public_key: impl AsRef<str>,
-        mnemonic_id: impl AsRef<str>,
+        factor_source_id: impl AsRef<str>,
         address: impl AsRef<str>,
     ) {
         let path: AccountPath = path.as_ref().parse().unwrap();
         let account = derive_account(&mnemonic, passphrase.as_ref(), &path).unwrap();
         assert_eq!(account.private_key.to_hex(), private_key.as_ref());
         assert_eq!(account.public_key.to_hex(), public_key.as_ref());
-        assert_eq!(account.mnemonic_id.to_string(), mnemonic_id.as_ref());
+        assert_eq!(
+            account.factor_source_id.to_string(),
+            factor_source_id.as_ref()
+        );
         assert_eq!(account.address, address.as_ref());
         assert_eq!(account.network_id, network_id);
         assert_eq!(account.path, path);

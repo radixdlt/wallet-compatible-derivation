@@ -2,10 +2,18 @@ use thiserror::Error as ThisError;
 
 use crate::HDPathComponentValue;
 
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
 #[derive(ThisError, Debug, PartialEq, Eq)]
 pub enum Error {
+    #[error("Invalid BIP39 mnemonic")]
+    InvalidMnemonic,
+
     #[error("Unsupported or unknown Network ID: '{0}'")]
     UnsupportedOrUnknownNetworkID(HDPathComponentValue),
+
+      #[error("Unsupported or unknown Network ID: '{0}'")]
+    UnsupportedOrUnknownNetworkIDFromStr(String),
 
     #[error("Invalid BIP32 HD path: '{0}'")]
     InvalidBIP32Path(String),

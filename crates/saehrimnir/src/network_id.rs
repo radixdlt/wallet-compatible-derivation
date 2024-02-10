@@ -2,12 +2,23 @@ use radix_engine_common::network::NetworkDefinition;
 
 use crate::prelude::*;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display)]
 pub enum NetworkID {
+    #[display("mainnet")]
     Mainnet,
+    #[display("stokenet")]
     Stokenet,
 }
 
+impl FromStr for NetworkID {
+    type Err = crate::Error;
+
+    fn from_str(s: &str) -> radix_engine_common::prelude::Result<Self, Self::Err> {
+        s.parse::<HDPathComponentValue>()
+            .map_err(|_| Error::UnsupportedOrUnknownNetworkIDFromStr(s.to_owned()))
+            .and_then(Self::try_from)
+    }
+}
 impl TryFrom<HDPathComponentValue> for NetworkID {
     type Error = crate::Error;
 
