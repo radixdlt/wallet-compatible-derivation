@@ -34,14 +34,13 @@ assert_eq!(account.private_key.to_hex(), "cf52dbc7bb2663223e99fb31799281b813b939
 ```
 
 ## Etymology
-[🇸🇪 **Särimner** (🇬🇧 _Sæhrímnir_)](https://en.wikipedia.org/wiki/S%C3%A6hr%C3%ADmnir) is the eternal pig in **Asatro** (_Norse Mythology_)]([Norse_mythology](https://en.wikipedia.org/wiki/Norse_mythology)), that gets eaten every night by **Asarna** (_the gods_) and fallen heros brought to **Valhall** (_Valhalla_) and is brought back to life again to provide sustenance for the following day. A source of infinite pork. Read: an infinite source of sustenance - just like hierarchical deterministic account derivation!
+[🇸🇪 **Särimner** (🇬🇧 _Sæhrímnir_)](https://en.wikipedia.org/wiki/S%C3%A6hr%C3%ADmnir) is the eternal pig in **Asatro** ([_Norse Mythology_](https://en.wikipedia.org/wiki/Norse_mythology)), that gets eaten every night by **Asarna** (_the gods_) and fallen heros brought to **Valhall** (_Valhalla_) and is brought back to life again to provide sustenance for the following day. A source of infinite pork. Read: an infinite source of sustenance - just like hierarchical deterministic account derivation!
 
 # bacon 🥓
 
 **b**abylon **a**ccount **c**reati**on**
 
-Alternatively: **b**abylon **a**ccount **c**reation **o**n **n**etwork 
-
+Alt: **b**abylon **a**ccount **c**reation **o**n **n**etwork 
 (accounts are virtual, so nothing is created "On Ledger", but rather we describe the fact that you select which network you wanna create the account for.)
 
 `bacon` is a CLI tool using `saehrimnir`, allowing you to derive keys and account address from a Mnemonic, optional BIP39 passphrase, network id and an account index.
@@ -78,12 +77,6 @@ bacon --include-private-key no-pager \
 --count 7
 ```
 
-### Short
-
-```sh
-bacon no-pager -m  "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote" -p "secret" -n "mainnet" -s 1 -c 2
-```
-
 ### Help
 
 ```sh
@@ -105,5 +98,4 @@ This notice shall be included in all copies or substantial portions of the Softw
 THE SOFTWARE HAS BEEN CREATED AND IS PROVIDED FOR NON-PRODUCTION, INFORMATIONAL AND EDUCATIONAL PURPOSES ONLY. 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ERROR-FREE PERFORMANCE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, COSTS OR OTHER LIABILITY OF ANY NATURE WHATSOEVER, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE, MISUSE OR OTHER DEALINGS IN THE SOFTWARE. THE AUTHORS SHALL OWE NO DUTY OF CARE OR FIDUCIARY DUTIES TO USERS OF THE SOFTWARE. 
-
 ```
