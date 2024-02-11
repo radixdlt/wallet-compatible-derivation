@@ -39,23 +39,29 @@ assert_eq!(account.private_key.to_hex(), "cf52dbc7bb2663223e99fb31799281b813b939
 # bacon 🥓
 
 **b**abylon **a**ccount **c**reati**on**
-alt: **b**abylon **a**ccount **c**reation **o**n **n**etwork (accounts are virtual, so nothing is created "On Ledger", but rather we describe the fact that you select which network you wanna create the account for.)
+
+Alternatively: **b**abylon **a**ccount **c**reation **o**n **n**etwork 
+
+(accounts are virtual, so nothing is created "On Ledger", but rather we describe the fact that you select which network you wanna create the account for.)
 
 `bacon` is a CLI tool using `saehrimnir`, allowing you to derive keys and account address from a Mnemonic, optional BIP39 passphrase, network id and an account index.
 
 ## pager
 
 ```sh
-bacon pager
+bacon pager --include-private-key
 ```
 
 Which is the default, so you can just run:
 
 ```sh
-bacon
+bacon --include-private-key
 ```
 
 Will start a pager, for security reasons, and this is **very much** the recommended way of running `bacon`.
+
+### Demo
+![demo_pager](./.github/readme_assets/bacon_pager.gif)
 
 ## no-pager
 
@@ -64,12 +70,12 @@ Will start a pager, for security reasons, and this is **very much** the recommen
 > ONLY Use this for mnemonics and accounts you really do not care about.
 
 ```sh
-bacon no-pager \
+bacon --include-private-key no-pager \
 --mnemonic  "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote" \
 --passphrase "secret" \
 --network "mainnet" \
---start 1 \
---count 2
+--start 100 \
+--count 7
 ```
 
 ### Short
