@@ -112,14 +112,12 @@ mod tests {
         assert_eq!(s.parse::<Mnemonic24Words>().unwrap().to_string(), s);
     }
 
-
     #[test]
     fn test_0_parse() {
         let sut: Mnemonic24Words = "__test_0".parse().unwrap();
         assert_eq!(sut.to_string(), "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate")
     }
 
-    
     #[test]
     fn test_1_parse() {
         let sut: Mnemonic24Words = "__test_1".parse().unwrap();

@@ -24,6 +24,9 @@ pub struct Account {
     /// A bech32 encoded Radix Babylon account address
     pub address: String,
 
+    /// The value of the last HD path component, the account index.
+    pub index: HDPathComponentValue,
+
     /// The HD path which was used to derive the keys.
     pub path: AccountPath,
 
@@ -36,9 +39,10 @@ impl std::fmt::Display for Account {
         writeln!(f, "Factor Source ID: {}", self.factor_source_id)?;
         writeln!(f, "Address: {}", self.address)?;
         writeln!(f, "Network: {}", self.network_id)?;
+        writeln!(f, "Index: {}", self.index)?;
         writeln!(f, "HD Path: {}", self.path)?;
         writeln!(f, "PrivateKey: {}", self.private_key.to_hex())?;
-        writeln!(f, "PublicKey: {}", self.public_key.to_hex())?;
+        write!(f, "PublicKey: {}", self.public_key.to_hex())?;
         Ok(())
     }
 }
@@ -63,9 +67,14 @@ impl Account {
             private_key,
             public_key,
             address,
+            index: path.clone().account_index(),
             path: path.clone(),
             factor_source_id,
         }
+    }
+
+    pub fn is_zeroized(&self) -> bool {
+        self.private_key.to_bytes() == [0; 32]
     }
 }
 
@@ -103,6 +112,7 @@ mod tests {
         assert_eq!(account.address, address.as_ref());
         assert_eq!(account.network_id, network_id);
         assert_eq!(account.path, account_path);
+        assert_eq!(account.index, index);
     }
 
     #[test]

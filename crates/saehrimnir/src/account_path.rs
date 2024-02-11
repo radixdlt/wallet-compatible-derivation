@@ -66,7 +66,10 @@ pub struct AccountPath(pub(crate) BIP32Path<{ Self::DEPTH }>);
 
 impl AccountPath {
     pub fn network_id(&self) -> NetworkID {
-        NetworkID::try_from(unhardened(self.0.clone().components()[2])).expect("Should not have been possible to instantiate an Account Path with an invalid Network ID.")
+        NetworkID::try_from(unhardened(self.0.clone().components()[Self::IDX_NETWORK_ID])).expect("Should not have been possible to instantiate an Account Path with an invalid Network ID.")
+    }
+    pub fn account_index(&self) -> HDPathComponentValue {
+        unhardened(self.0.clone().components()[Self::IDX_ACCOUNT_INDEX])
     }
 }
 
@@ -106,23 +109,29 @@ impl TryFrom<BIP32Path<{ Self::DEPTH }>> for AccountPath {
                 Ok(())
             }
         };
-        assert_value(0, PURPOSE)?;
-        assert_value(1, COINTYPE)?;
-        assert_with(2, |v| {
+        assert_value(Self::IDX_PURPOSE, PURPOSE)?;
+        assert_value(Self::IDX_COINTYPE, COINTYPE)?;
+        assert_with(Self::IDX_NETWORK_ID, |v| {
             NetworkID::all()
                 .into_iter()
                 .map(|n| n.hardened_hd_component_value())
                 .any(|c| c == v)
         })?;
-        assert_value(3, ENTITY_KIND_ACCOUNT)?;
-        assert_value(4, KEY_KIND_SIGN_TX)?;
-        // Nothing to validate at component index 5
+        assert_value(Self::IDX_ENTITY_KIND, ENTITY_KIND_ACCOUNT)?;
+        assert_value(Self::IDX_KEY_KIND, KEY_KIND_SIGN_TX)?;
+        // Nothing to validate at component index `IDX_ACCOUNT_INDEX` (5)
         Ok(Self(value))
     }
 }
 
 impl AccountPath {
     pub const DEPTH: usize = 6;
+    pub(crate) const IDX_PURPOSE: usize = 0;
+    pub(crate) const IDX_COINTYPE: usize = 1;
+    pub(crate) const IDX_NETWORK_ID: usize = 2;
+    pub(crate) const IDX_ENTITY_KIND: usize = 3;
+    pub(crate) const IDX_KEY_KIND: usize = 4;
+    pub(crate) const IDX_ACCOUNT_INDEX: usize = 5;
 
     pub fn new(network_id: &NetworkID, index: EntityIndex) -> Self {
         let bip32_path = BIP32Path::<{ Self::DEPTH }>([
@@ -158,5 +167,7 @@ mod tests {
         let s = "m/44H/1022H/1H/525H/1460H/0H";
         let path: AccountPath = s.parse().unwrap();
         assert_eq!(path.to_string(), s);
+        assert_eq!(path.network_id(), NetworkID::Mainnet);
+        assert_eq!(path.account_index(), 0);
     }
 }

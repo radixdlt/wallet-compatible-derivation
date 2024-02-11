@@ -7,28 +7,47 @@ use zeroize::{Zeroize, ZeroizeOnDrop};
 #[derive(Debug, Args, Zeroize, ZeroizeOnDrop)]
 pub(crate) struct Config {
     /// The mnemonic you wanna use to derive accounts with.
-    #[arg(short = 'm', long = "mnemonic", value_parser = Mnemonic24Words::from_str)]
+    #[arg(
+        short = 'm',
+        long = "mnemonic", 
+        help = "The BIP39 Mnemonic ('Seed Phrase') used to derive the accounts. Must be a 24 word English Mnemonic.", value_parser = Mnemonic24Words::from_str
+    )]
     pub(crate) mnemonic: Mnemonic24Words,
 
     /// An optional BIP39 passphrase.
-    #[arg(short = 'p', long = "passphrase", default_value_t = String::new())]
+    #[arg(short = 'p', long = "passphrase", help = "Advanced: An optional BIP39 passphrase, use the empty string if you don't need one. Often referred to as 'the 25th word'. For extra security.", default_value_t = String::new())]
     pub(crate) passphrase: String,
 
     /// The Network you want to derive accounts on.
-    #[arg(short = 'n', long = "network_id", value_parser = NetworkID::from_str, default_value_t = NetworkID::Mainnet)]
-    pub(crate) network_id: NetworkID,
+    #[arg(short = 'n', long = "network", help = "The ID of the Radix Network the derived accounts should be used with.", value_parser = NetworkID::from_str, default_value_t = NetworkID::Mainnet)]
+    pub(crate) network: NetworkID,
 
-    /// The account index
-    #[arg(short = 'i', long = "index", default_value_t = 0)]
-    pub(crate) index: u32,
+    /// The start account index
+    #[arg(
+        short = 's',
+        long = "start",
+        help = "The start account index to derive the first account at.",
+        default_value_t = 0
+    )]
+    pub(crate) start: u32,
+
+    /// The number of accounts to derive.
+    #[arg(
+        short = 'c',
+        long = "count",
+        help = "The number of accounts to derive, starting at `index`. Max 255.",
+        default_value_t = 2
+    )]
+    pub(crate) count: u8,
 }
 
 impl std::fmt::Display for Config {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Mnemonic: {}", self.mnemonic)?;
         writeln!(f, "Passphrase: {}", self.passphrase)?;
-        writeln!(f, "NetworkID: {}", self.network_id)?;
-        writeln!(f, "Index: {}", self.index)?;
+        writeln!(f, "Network: {}", self.network)?;
+        writeln!(f, "Start Index: {}", self.start)?;
+        writeln!(f, "Number of accounts: {}", self.count)?;
         Ok(())
     }
 }
@@ -48,8 +67,9 @@ mod tests {
         let mut config = Config {
             mnemonic: Mnemonic24Words::from_str("zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote").unwrap(),
             passphrase: "radix".to_owned(),
-            network_id: NetworkID::Mainnet,
-            index: 0,
+            network: NetworkID::Mainnet,
+            start: 0,
+            count: 1,
         };
 
         let mnemonic_view = &config.mnemonic as *const _ as *const u8;

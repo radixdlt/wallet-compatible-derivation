@@ -6,7 +6,7 @@ use inquire::{CustomType, Password, Select};
 use saehrimnir::prelude::*;
 
 use pager::Pager;
-use std::{thread, time};
+use std::{ops::Range, thread, time};
 use zeroize::Zeroize;
 
 #[derive(Parser)]
@@ -48,22 +48,30 @@ fn read_config_from_stdin() -> Result<Config> {
         .prompt()
         .unwrap();
 
-    let network_id: NetworkID = Select::new("Choose Network ID", NetworkID::all())
+    let network: NetworkID = Select::new("Choose Network", NetworkID::all())
         .prompt()
         .expect("Should not be possible to select in invalid network id");
 
-    let index = CustomType::<HDPathComponentValue>::new("Account index: ")
+    let start = CustomType::<HDPathComponentValue>::new("Account index start: ")
         .with_formatter(&|i| format!("{}H", i))
-        .with_error_message("Please type a valid non negative integer")
-        .with_help_message("Only non negative integers <= 2,147,483,648 are allowed")
+        .with_error_message("Only non negative integers <= 2,147,483,648 are allowed")
+        .with_help_message("Normally you want to start at index `0`.")
         .prompt()
         .expect("Should not be possible to input an invalid u32");
+
+    let count = CustomType::<u8>::new("Number of accounts to derive: ")
+        .with_formatter(&|i| format!("{}H", i))
+        .with_error_message("Only non negative integers <= 255 are allowed")
+        .with_help_message("If you need more than 255 to be derived, let us know!.")
+        .prompt()
+        .expect("Should not be possible to input an invalid u8");
 
     Ok(Config {
         mnemonic,
         passphrase,
-        network_id,
-        index,
+        network,
+        start,
+        count,
     })
 }
 
@@ -88,23 +96,39 @@ fn main() {
     }
     .expect("Valid config");
 
-    let account_path = AccountPath::new(&config.network_id, config.index);
-    let mut account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
+    let mut zeroized_accounts = true;
 
-    print_account(&account);
+    let start = config.start;
+    let count = config.count as u32;
+    let end = start + count;
+    for index in (Range { start, end }) {
+        let account_path = AccountPath::new(&config.network, index);
+        let mut account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
+        print_account(&account);
+        account.zeroize();
+        zeroized_accounts &= account.is_zeroized();
+    }
 
     config.zeroize();
-    account.zeroize();
 
-    if use_pager && config.mnemonic.is_zeroized() && account.private_key.to_bytes() == [0; 32] {
+    if use_pager && config.mnemonic.is_zeroized() && zeroized_accounts {
         print_secrets_safe()
     }
 
     drop(config);
-    drop(account);
 }
 
 const WIDTH: usize = 50;
+
+fn print_account(account: &Account) {
+    let delimiter = "✨".repeat(WIDTH);
+    let header_delimiter = "🔮".repeat(WIDTH);
+    let header = ["✅ CREATED ACCOUNT ✅", &header_delimiter].join("\n");
+    let new_account_string =
+        [delimiter.clone(), header, format!("{account}"), delimiter].join("\n");
+    println!("\n{new_account_string}");
+}
+
 fn print_secrets_safe() {
     let delimiter = "🛡️ ".repeat(WIDTH);
     let safe = [
@@ -115,12 +139,4 @@ fn print_secrets_safe() {
     ]
     .join("\n");
     println!("{safe}")
-}
-fn print_account(account: &Account) {
-    let delimiter = "✨".repeat(WIDTH);
-    let header_delimiter = "🔮".repeat(WIDTH);
-    let header = ["Created Account", &header_delimiter].join("\n");
-    let new_account_string =
-        [delimiter.clone(), header, format!("{account}"), delimiter].join("\n");
-    println!("{new_account_string}");
 }
