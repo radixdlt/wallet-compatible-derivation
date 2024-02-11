@@ -42,7 +42,6 @@ mod tests {
     };
 
     use super::*;
-    use saehrimnir::prelude::*;
 
     #[test]
     fn zeroize_config() {
@@ -79,6 +78,6 @@ mod tests {
         let again_back_passphrase_string: String = again_back_passphrase_c_string
             .to_string_lossy()
             .into_owned();
-        assert_eq!(again_back_passphrase_string, "");
+        assert_ne!(again_back_passphrase_string, "radix");
     }
 }

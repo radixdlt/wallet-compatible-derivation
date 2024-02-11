@@ -7,6 +7,7 @@ use saehrimnir::prelude::*;
 
 use pager::Pager;
 use std::{thread, time};
+use zeroize::Zeroize;
 
 #[derive(Parser)]
 #[command(name = "bacon", version)]
@@ -25,6 +26,14 @@ struct Cli {
 enum Commands {
     NoPager(Config),
     Pager,
+}
+impl Commands {
+    fn is_using_pager(&self) -> bool {
+        match self {
+            Commands::NoPager(_) => false,
+            Commands::Pager => true,
+        }
+    }
 }
 
 fn read_config_from_stdin() -> Result<Config> {
@@ -68,7 +77,9 @@ fn paged() {
 
 fn main() {
     let cli = Cli::parse();
-    let config = match cli.command.unwrap_or(Commands::Pager) {
+    let command = cli.command.unwrap_or(Commands::Pager);
+    let use_pager = command.is_using_pager();
+    let mut config = match command {
         Commands::NoPager(c) => Ok(c),
         Commands::Pager => {
             paged();
@@ -78,8 +89,38 @@ fn main() {
     .expect("Valid config");
 
     let account_path = AccountPath::new(&config.network_id, config.index);
-    let account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
-    println!("Account:\n{}", account);
-    drop(account);
+    let mut account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
+
+    print_account(&account);
+
+    config.zeroize();
+    account.zeroize();
+
+    if use_pager && config.mnemonic.is_zeroized() && account.private_key.to_bytes() == [0; 32] {
+        print_secrets_safe()
+    }
+
     drop(config);
+    drop(account);
+}
+
+const WIDTH: usize = 50;
+fn print_secrets_safe() {
+    let delimiter = "🛡️ ".repeat(WIDTH);
+    let safe = [
+        "\n\n",
+        &delimiter,
+        "🔐 All sensitive data have been zeroized, your secrets are safe 🔐",
+        &delimiter,
+    ]
+    .join("\n");
+    println!("{safe}")
+}
+fn print_account(account: &Account) {
+    let delimiter = "✨".repeat(WIDTH);
+    let header_delimiter = "🔮".repeat(WIDTH);
+    let header = ["Created Account", &header_delimiter].join("\n");
+    let new_account_string =
+        [delimiter.clone(), header, format!("{account}"), delimiter].join("\n");
+    println!("{new_account_string}");
 }

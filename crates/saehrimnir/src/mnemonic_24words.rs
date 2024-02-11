@@ -40,6 +40,24 @@ impl Mnemonic24Words {
         bip39::Mnemonic::from_entropy(self.0.as_slice())
             .expect("Should always be able to create a BIP39 mnemonic.")
     }
+
+    pub fn is_zeroized(&self) -> bool {
+        self.0 == [0; 32]
+    }
+}
+
+pub(crate) trait TestValue {
+    fn test_0() -> Self;
+    fn test_1() -> Self;
+}
+
+impl TestValue for Mnemonic24Words {
+    fn test_0() -> Self {
+        "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap()
+    }
+    fn test_1() -> Self {
+        "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote".parse().unwrap()
+    }
 }
 
 impl Mnemonic24Words {
@@ -53,6 +71,12 @@ impl FromStr for Mnemonic24Words {
     type Err = crate::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s == "__test_0" {
+            return Ok(Self::test_0());
+        }
+        if s == "__test_1" {
+            return Ok(Self::test_1());
+        }
         s.parse::<bip39::Mnemonic>()
             .map_err(|_| Error::InvalidMnemonic)
             .and_then(|m| m.try_into())
@@ -88,6 +112,20 @@ mod tests {
         assert_eq!(s.parse::<Mnemonic24Words>().unwrap().to_string(), s);
     }
 
+
+    #[test]
+    fn test_0_parse() {
+        let sut: Mnemonic24Words = "__test_0".parse().unwrap();
+        assert_eq!(sut.to_string(), "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate")
+    }
+
+    
+    #[test]
+    fn test_1_parse() {
+        let sut: Mnemonic24Words = "__test_1".parse().unwrap();
+        assert_eq!(sut.to_string(), "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote")
+    }
+
     #[test]
     fn entropy() {
         let s = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote";
@@ -115,5 +153,6 @@ mod tests {
         for i in range.clone() {
             assert_eq!(unsafe { *view.offset(i) }, 0x00);
         }
+        assert!(mnemonic.is_zeroized());
     }
 }

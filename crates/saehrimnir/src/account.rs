@@ -105,19 +105,6 @@ mod tests {
         assert_eq!(account.path, account_path);
     }
 
-    trait TestValue {
-        fn test_0() -> Self;
-        fn test_1() -> Self;
-    }
-    impl TestValue for Mnemonic24Words {
-        fn test_0() -> Self {
-            "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap()
-        }
-        fn test_1() -> Self {
-            "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote".parse().unwrap()
-        }
-    }
-
     #[test]
     fn zeroize_account_private_key_is_zeroized() {
         let mnemonic = Mnemonic24Words::new([
