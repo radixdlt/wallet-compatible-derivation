@@ -4,3 +4,4 @@ members = ["crates/saehrimnir", "crates/bacon"]
 
 [workspace.dependencies]
 thiserror = { version = "1.0.56" }
+zeroize = { version = "1.7.0", features = ["zeroize_derive", "derive"] }

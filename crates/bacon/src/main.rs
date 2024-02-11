@@ -4,6 +4,7 @@ use saehrimnir::prelude::*;
 
 use pager::Pager;
 use std::{str::FromStr, thread, time};
+use zeroize::ZeroizeOnDrop;
 
 #[derive(Parser)]
 #[command(name = "bacon", version)]
@@ -24,7 +25,7 @@ enum Commands {
     Pager,
 }
 
-#[derive(Debug, Args)]
+#[derive(Debug, Args, ZeroizeOnDrop)]
 struct Config {
     /// The mnemonic you wanna use to derive accounts with.
     #[arg(short = 'm', long = "mnemonic", value_parser = Mnemonic24Words::from_str)]
@@ -103,7 +104,9 @@ fn main() {
     }
     .expect("Valid config");
 
-    let account_path = AccountPath::new(config.network_id, config.index);
-    let account = Account::derive(&config.mnemonic, config.passphrase, &account_path);
+    let account_path = AccountPath::new(&config.network_id, config.index);
+    let account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
     println!("Account:\n{}", account);
+    drop(account);
+    drop(config);
 }

@@ -9,6 +9,7 @@ const BIP32_HARDENED: HDPathComponentValue = 2147483648;
 pub const fn harden(value: HDPathComponentValue) -> HDPathComponentValue {
     value + BIP32_HARDENED
 }
+
 pub const fn is_hardened(value: HDPathComponentValue) -> bool {
     value >= BIP32_HARDENED
 }
@@ -56,7 +57,7 @@ pub type EntityIndex = u32;
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
 /// ```
 ///
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display)]
+#[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display)]
 pub struct AccountPath(pub(crate) BIP32Path);
 
 impl AccountPath {
@@ -118,7 +119,8 @@ impl TryFrom<BIP32Path> for AccountPath {
 
 impl AccountPath {
     pub const DEPTH: usize = 6;
-    pub fn new(network_id: NetworkID, index: EntityIndex) -> Self {
+    
+    pub fn new(network_id: &NetworkID, index: EntityIndex) -> Self {
         let components: Vec<HDPathComponentValue> = vec![
             PURPOSE,
             COINTYPE,

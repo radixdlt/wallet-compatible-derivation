@@ -15,5 +15,5 @@ itertools = "0.12.1"
 strum_macros = "0.26.1"
 strum = "0.26.1"
 enum-iterator = "1.5.0"
-zeroize = { version = "1.7.0", features = ["zeroize_derive", "derive"] }
+zeroize = { workspace = true }
 ed25519-dalek = { version = "1.0.1 " }

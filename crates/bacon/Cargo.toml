@@ -8,3 +8,4 @@ clap = { version = "4.4.2", features = ["derive"] }
 inquire = { version = "0.6.2", features = ["editor"] }
 pager = "0.16.1"
 saehrimnir = { path = "../saehrimnir" }
+zeroize = { workspace = true }

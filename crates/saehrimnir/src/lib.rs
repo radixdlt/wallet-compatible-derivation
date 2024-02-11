@@ -14,7 +14,7 @@
 //!
 //! // Create an hierarchical deterministic derivation path.
 //! let path = AccountPath::new(
-//!	    NetworkID::Mainnet, // Mainnet or Stokenet (testnet)
+//!	    &NetworkID::Mainnet, // Mainnet or Stokenet (testnet)
 //!	    0 // Account Index, 0 is first.
 //! );
 //!
@@ -56,6 +56,7 @@ pub mod prelude {
     pub(crate) use crate::derive_account_address::*;
     pub(crate) use crate::derive_key_pair::*;
     pub(crate) use std::str::FromStr;
+    pub(crate) use zeroize::ZeroizeOnDrop;
 }
 
 pub use prelude::*;

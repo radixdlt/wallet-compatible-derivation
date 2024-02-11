@@ -5,7 +5,7 @@ use radix_engine_common::{
     address::AddressBech32Encoder, crypto::Ed25519PublicKey, types::ComponentAddress,
 };
 
-pub(crate) fn derive_address(public_key: &PublicKey, network_id: NetworkID) -> String {
+pub(crate) fn derive_address(public_key: &PublicKey, network_id: &NetworkID) -> String {
     let public_key = Ed25519PublicKey::try_from(public_key.to_bytes().as_slice()).expect("Should always be able to create a Radix Engine Ed25519PublicKey from Dalek Ed25519 public key");
     let address_data = ComponentAddress::virtual_account_from_public_key(&public_key);
     let address_encoder = AddressBech32Encoder::new(&network_id.network_definition());

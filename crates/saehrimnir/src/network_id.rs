@@ -4,7 +4,16 @@ use strum_macros::{Display, EnumString};
 use crate::prelude::*;
 
 #[derive(
-    Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, EnumString, Display, enum_iterator::Sequence,
+    ZeroizeOnDrop,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    EnumString,
+    Display,
+    enum_iterator::Sequence,
 )]
 pub enum NetworkID {
     #[strum(ascii_case_insensitive)]

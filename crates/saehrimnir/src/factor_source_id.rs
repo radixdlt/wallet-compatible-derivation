@@ -8,7 +8,7 @@ use crate::prelude::*;
 /// And the public key is not the public key of any account signing key, a
 /// special derivation path which is different from that of accounts have been used
 /// to derive this key pair.
-#[derive(Clone, Debug, PartialEq, Eq, derive_more::Display)]
+#[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, derive_more::Display)]
 pub struct FactorSourceID(String);
 
 impl FactorSourceID {

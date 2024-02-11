@@ -1,7 +1,6 @@
 use crate::prelude::*;
 
 use ed25519_dalek::{PublicKey, SecretKey};
-use zeroize::ZeroizeOnDrop;
 
 /// A tuple of keys and Radix Babylon Account address, for a
 /// virtual account - an account that the Radix Public Ledger
@@ -9,7 +8,6 @@ use zeroize::ZeroizeOnDrop;
 #[derive(ZeroizeOnDrop)]
 pub struct Account {
     /// The network used to derive the `address`.
-    #[zeroize(skip)]
     pub network_id: NetworkID,
 
     /// The private key controlling this account - assuming that you have
@@ -23,15 +21,12 @@ pub struct Account {
     pub public_key: PublicKey,
 
     /// A bech32 encoded Radix Babylon account address
-    #[zeroize(skip)]
     pub address: String,
 
     /// The HD path which was used to derive the keys.
-    #[zeroize(skip)]
     pub path: AccountPath,
 
     /// ID used to identify that two accounts have been derived from the same mnemonic - does not reveal any secrets.
-    #[zeroize(skip)]
     pub factor_source_id: FactorSourceID,
 }
 
@@ -59,8 +54,8 @@ impl Account {
         let network_id = path.network_id();
         let seed = mnemonic.to_seed(passphrase.as_ref());
         let factor_source_id = FactorSourceID::from_seed(&seed);
-        let (private_key, public_key) = derive_ed25519_key_pair(&seed, &path.0 .0);
-        let address = derive_address(&public_key, network_id);
+        let (private_key, public_key) = derive_ed25519_key_pair(&seed, &path.0.inner());
+        let address = derive_address(&public_key, &network_id);
 
         Self {
             network_id,
@@ -92,7 +87,7 @@ mod tests {
         address: impl AsRef<str>,
     ) {
         let path = path.as_ref();
-        let account_path = AccountPath::new(network_id, index);
+        let account_path = AccountPath::new(&network_id, index);
         assert_eq!(path.parse::<AccountPath>().unwrap(), account_path); // test FromStr
         assert_eq!(account_path.to_string(), path); // test Display
         let account = Account::derive(&mnemonic, passphrase.as_ref(), &account_path);
