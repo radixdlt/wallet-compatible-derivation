@@ -1,4 +1,4 @@
-use radix_engine_common::crypto::blake2b_256_hash;
+use radix_engine_common::crypto::{blake2b_256_hash, IsHash};
 
 use crate::prelude::*;
 
@@ -9,7 +9,14 @@ use crate::prelude::*;
 /// special derivation path which is different from that of accounts have been used
 /// to derive this key pair.
 #[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, derive_more::Display)]
-pub struct FactorSourceID(String);
+#[display("{}", self.to_hex())]
+pub struct FactorSourceID([u8; 32]);
+
+impl ToHex for FactorSourceID {
+    fn to_hex(&self) -> String {
+        hex::encode(self.0)
+    }
+}
 
 impl FactorSourceID {
     pub(crate) fn from_seed(seed: &[u8]) -> Self {
@@ -18,7 +25,6 @@ impl FactorSourceID {
         let (private_key, public_key) = derive_ed25519_key_pair(seed, &path);
         drop(private_key);
         let hash = blake2b_256_hash(&public_key.as_bytes());
-        let hex = hex::encode(hash);
-        FactorSourceID(hex)
+        Self(hash.into_bytes())
     }
 }

@@ -4,7 +4,7 @@ use zeroize::ZeroizeOnDrop;
 /// A guaranteed 24 words long BIP39 mnemonic.
 #[derive(Debug, Clone, PartialEq, Eq, derive_more::Display, ZeroizeOnDrop)]
 #[display("{}", self.phrase())]
-pub struct Mnemonic24Words(Vec<u8>);
+pub struct Mnemonic24Words([u8; 32]);
 
 impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
     type Error = crate::Error;
@@ -16,7 +16,11 @@ impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
                 found: value.word_count(),
             });
         }
-        Ok(Self(value.to_entropy()))
+        value
+            .to_entropy()
+            .try_into()
+            .map_err(|_| Error::InvalidMnemonic)
+            .map(|v| Self(v))
     }
 }
 

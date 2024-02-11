@@ -32,6 +32,9 @@ pub enum Error {
     #[error("Invalid Radix Account path, expected: {expected}, found {found}.")]
     InvalidAccountPathWrongDepth { expected: usize, found: usize },
 
+    #[error("Invalid BIP32 Path, expected: {expected}, found {found}.")]
+    InvalidDepthOfBIP32Path { expected: usize, found: usize },
+
     #[error("Invalid Radix Account path, invalid value at index: {index}, expected: {expected}, found {found}.")]
     InvalidAccountPathWrongValue {
         index: usize,

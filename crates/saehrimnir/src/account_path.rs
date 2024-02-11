@@ -58,7 +58,7 @@ pub type EntityIndex = u32;
 /// ```
 ///
 #[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display)]
-pub struct AccountPath(pub(crate) BIP32Path);
+pub struct AccountPath(pub(crate) BIP32Path<{ Self::DEPTH }>);
 
 impl AccountPath {
     pub fn network_id(&self) -> NetworkID {
@@ -66,10 +66,10 @@ impl AccountPath {
     }
 }
 
-impl TryFrom<BIP32Path> for AccountPath {
+impl TryFrom<BIP32Path<{ Self::DEPTH }>> for AccountPath {
     type Error = crate::Error;
 
-    fn try_from(value: BIP32Path) -> Result<Self, Self::Error> {
+    fn try_from(value: BIP32Path<{ Self::DEPTH }>) -> Result<Self, Self::Error> {
         if !value.clone().into_iter().all(|c| is_hardened(c)) {
             return Err(Error::InvalidAccountPathNonHardenedPathComponent);
         }
@@ -119,17 +119,17 @@ impl TryFrom<BIP32Path> for AccountPath {
 
 impl AccountPath {
     pub const DEPTH: usize = 6;
-    
+
     pub fn new(network_id: &NetworkID, index: EntityIndex) -> Self {
-        let components: Vec<HDPathComponentValue> = vec![
+        let bip32_path = BIP32Path::<{ Self::DEPTH }>([
             PURPOSE,
             COINTYPE,
             network_id.hardened_hd_component_value(),
             ENTITY_KIND_ACCOUNT,
             KEY_KIND_SIGN_TX,
             harden(index),
-        ];
-        let bip32_path: BIP32Path = slip10::path::BIP32Path::from(components).into();
+        ]);
+
         bip32_path
             .try_into()
             .expect("Should have constructed a valid AccountPath from network_id and index.")
@@ -140,7 +140,8 @@ impl FromStr for AccountPath {
     type Err = crate::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        s.parse::<BIP32Path>().and_then(|p| p.try_into())
+        s.parse::<BIP32Path<{ Self::DEPTH }>>()
+            .and_then(|p| p.try_into())
     }
 }
 
