@@ -9,6 +9,11 @@ pub enum Error {
     #[error("Invalid BIP39 mnemonic")]
     InvalidMnemonic,
 
+    #[error(
+        "Mnemonic has too few words, only {expected} words mnemonics are supported, found: {found}"
+    )]
+    UnsupportedMnemonicTooFewWords { expected: usize, found: usize },
+
     #[error("Unsupported or unknown Network ID: '{0}'")]
     UnsupportedOrUnknownNetworkID(HDPathComponentValue),
 

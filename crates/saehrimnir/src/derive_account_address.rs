@@ -54,10 +54,10 @@ fn factor_source_id(seed: &[u8]) -> FactorSourceID {
 }
 
 /// Derives a simple [`Account`] using the `mnemonic` and BIP39 `passphrase` (can be the empty string) using the hierarchical deterministic derivation path `path`.
-/// 
+///
 /// See [`Account`] for more details, but in short it is an Address + key pair.
 pub fn derive_account(
-    mnemonic: &Mnemonic,
+    mnemonic: &Mnemonic24Words,
     passphrase: impl AsRef<str>,
     path: &AccountPath,
 ) -> Account {
@@ -86,7 +86,7 @@ mod tests {
     use crate::prelude::*;
 
     fn test(
-        mnemonic: Mnemonic,
+        mnemonic: Mnemonic24Words,
         passphrase: impl AsRef<str>,
         network_id: NetworkID,
         index: HDPathComponentValue,
@@ -116,7 +116,7 @@ mod tests {
         fn test_0() -> Self;
         fn test_1() -> Self;
     }
-    impl TestValue for Mnemonic {
+    impl TestValue for Mnemonic24Words {
         fn test_0() -> Self {
             "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap()
         }
@@ -128,7 +128,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_without_passphrase_mainnet_index_0() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "",
             NetworkID::Mainnet,
             0,
@@ -143,7 +143,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_without_passphrase_mainnet_index_1() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "",
             NetworkID::Mainnet,
             1,
@@ -158,7 +158,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_with_passphrase_mainnet_index_0() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "radix",
             NetworkID::Mainnet,
             0,
@@ -173,7 +173,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_with_passphrase_mainnet_index_1() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "radix",
             NetworkID::Mainnet,
             1,
@@ -188,7 +188,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_without_passphrase_stokenet_index_0() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "",
             NetworkID::Stokenet,
             0,
@@ -203,7 +203,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_without_passphrase_stokenet_index_1() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "",
             NetworkID::Stokenet,
             1,
@@ -218,7 +218,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_with_passphrase_stokenet_index_0() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "radix",
             NetworkID::Stokenet,
             0,
@@ -233,7 +233,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_0_with_passphrase_stokenet_index_1() {
         test(
-            Mnemonic::test_0(),
+            Mnemonic24Words::test_0(),
             "radix",
             NetworkID::Stokenet,
             1,
@@ -248,7 +248,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_without_passphrase_mainnet_index_0() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "",
             NetworkID::Mainnet,
             0,
@@ -263,7 +263,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_without_passphrase_mainnet_index_1() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "",
             NetworkID::Mainnet,
             1,
@@ -278,7 +278,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_with_passphrase_mainnet_index_0() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "foo",
             NetworkID::Mainnet,
             0,
@@ -293,7 +293,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_with_passphrase_mainnet_index_1() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "foo",
             NetworkID::Mainnet,
             1,
@@ -308,7 +308,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_without_passphrase_stokenet_index_0() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "",
             NetworkID::Stokenet,
             0,
@@ -323,7 +323,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_without_passphrase_stokenet_index_1() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "",
             NetworkID::Stokenet,
             1,
@@ -338,7 +338,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_with_passphrase_stokenet_index_0() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "foo",
             NetworkID::Stokenet,
             0,
@@ -353,7 +353,7 @@ mod tests {
     #[test]
     fn derive_account_mnemonic_1_with_passphrase_stokenet_index_1() {
         test(
-            Mnemonic::test_1(),
+            Mnemonic24Words::test_1(),
             "foo",
             NetworkID::Stokenet,
             1,

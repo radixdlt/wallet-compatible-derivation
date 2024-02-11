@@ -19,7 +19,7 @@
 //! );
 //!
 //! // 24 word BIP39 English mnemonic
-//! let mnemonic: Mnemonic = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
+//! let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 //!
 //! // Derive Babylon Radix account...
 //! let account = derive_account(&mnemonic, "radix", &path);
@@ -36,7 +36,7 @@ mod account_path;
 mod bip32_path;
 mod derive_account_address;
 mod error;
-mod mnemonic;
+mod mnemonic_24words;
 mod network_id;
 
 pub mod prelude {
@@ -45,7 +45,7 @@ pub mod prelude {
     pub use crate::bip32_path::*;
     pub use crate::derive_account_address::*;
     pub use crate::error::*;
-    pub use crate::mnemonic::*;
+    pub use crate::mnemonic_24words::*;
     pub use crate::network_id::*;
 
     pub(crate) use std::str::FromStr;

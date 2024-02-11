@@ -27,8 +27,8 @@ enum Commands {
 #[derive(Debug, Args)]
 struct Config {
     /// The mnemonic you wanna use to derive accounts with.
-    #[arg(short = 'm', long = "mnemonic", value_parser = Mnemonic::from_str)]
-    mnemonic: Mnemonic,
+    #[arg(short = 'm', long = "mnemonic", value_parser = Mnemonic24Words::from_str)]
+    mnemonic: Mnemonic24Words,
 
     /// An optional BIP39 passphrase.
     #[arg(short = 'p', long = "passphrase", default_value_t = String::new())]
@@ -42,6 +42,7 @@ struct Config {
     #[arg(short = 'i', long = "index", default_value_t = 0)]
     index: u32,
 }
+
 impl std::fmt::Display for Config {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Mnemonic: {}", self.mnemonic)?;
@@ -53,7 +54,7 @@ impl std::fmt::Display for Config {
 }
 
 fn read_config_from_stdin() -> Result<Config> {
-    let mnemonic = CustomType::<Mnemonic>::new("Input mnemonic: ")
+    let mnemonic = CustomType::<Mnemonic24Words>::new("Input mnemonic: ")
         .with_formatter(&|m| format!("{}", m))
         .with_error_message("Please type a valid mnemonic")
         .with_help_message("Only English 24 word mnemonics are supported.")
@@ -102,7 +103,6 @@ fn main() {
     }
     .expect("Valid config");
 
-    println!("Input config: {}", config);
     let account_path = AccountPath::new(config.network_id, config.index);
     let account = derive_account(&config.mnemonic, config.passphrase, &account_path);
     println!("Account:\n{}", account);

@@ -17,7 +17,7 @@ let path = AccountPath::new(
 );
 
 // 24 word BIP39 English mnemonic
-let mnemonic: Mnemonic = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
+let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 
 // Derive Babylon Radix account...
 let account = derive_account(
@@ -54,11 +54,11 @@ bacon
 
 Will start a pager, for security reasons, and this is **very much** the recommended way of running `bacon`.
 
-### [Demo]
+### Demo
 
 ![pager](./.github/readme_assets/bacon_pager.gif)
 
-## nopager
+## no-pager
 
 > [!IMPORTANT]  
 > This is not safe, your mnemonic and your derived keys WILL be present in your shells command history and output.
