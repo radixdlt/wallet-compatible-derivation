@@ -6,8 +6,5 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.4.2", features = ["derive"] }
 inquire = { version = "0.6.2", features = ["editor"] }
-minus = "5.5.3"
 pager = "0.16.1"
-rpassword = "7.3.1"
 saehrimnir = { path = "../saehrimnir" }
-
