@@ -1,10 +1,12 @@
 use radix_engine_common::network::NetworkDefinition;
 use strum_macros::{Display, EnumString};
+use zeroize::Zeroize;
 
 use crate::prelude::*;
 
 #[derive(
     ZeroizeOnDrop,
+    Zeroize,
     Clone,
     Debug,
     PartialEq,

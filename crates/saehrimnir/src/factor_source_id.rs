@@ -1,4 +1,5 @@
 use radix_engine_common::crypto::{blake2b_256_hash, IsHash};
+use zeroize::Zeroize;
 
 use crate::prelude::*;
 
@@ -8,7 +9,7 @@ use crate::prelude::*;
 /// And the public key is not the public key of any account signing key, a
 /// special derivation path which is different from that of accounts have been used
 /// to derive this key pair.
-#[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, derive_more::Display)]
+#[derive(Zeroize, ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, derive_more::Display)]
 #[display("{}", self.to_hex())]
 pub struct FactorSourceID([u8; 32]);
 

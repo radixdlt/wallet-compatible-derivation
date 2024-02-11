@@ -1,3 +1,5 @@
+use zeroize::Zeroize;
+
 use crate::prelude::*;
 
 /// A HD Path component value, e.g. "1022" being the
@@ -57,7 +59,9 @@ pub type EntityIndex = u32;
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
 /// ```
 ///
-#[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display)]
+#[derive(
+    Zeroize, ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display,
+)]
 pub struct AccountPath(pub(crate) BIP32Path<{ Self::DEPTH }>);
 
 impl AccountPath {

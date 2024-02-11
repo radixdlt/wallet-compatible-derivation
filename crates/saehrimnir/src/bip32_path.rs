@@ -1,8 +1,9 @@
 use itertools::Itertools as _;
+use zeroize::Zeroize;
 
 use crate::prelude::*;
 
-#[derive(ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Zeroize, ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct BIP32Path<const N: usize>(pub(crate) [HDPathComponentValue; N]);
 
 impl<const N: usize> TryFrom<slip10::path::BIP32Path> for BIP32Path<N> {

@@ -1,10 +1,12 @@
-use clap::{Args, Parser, Subcommand};
+mod config;
+use crate::config::Config;
+
+use clap::{Parser, Subcommand};
 use inquire::{CustomType, Password, Select};
 use saehrimnir::prelude::*;
 
 use pager::Pager;
-use std::{str::FromStr, thread, time};
-use zeroize::ZeroizeOnDrop;
+use std::{thread, time};
 
 #[derive(Parser)]
 #[command(name = "bacon", version)]
@@ -23,35 +25,6 @@ struct Cli {
 enum Commands {
     NoPager(Config),
     Pager,
-}
-
-#[derive(Debug, Args, ZeroizeOnDrop)]
-struct Config {
-    /// The mnemonic you wanna use to derive accounts with.
-    #[arg(short = 'm', long = "mnemonic", value_parser = Mnemonic24Words::from_str)]
-    mnemonic: Mnemonic24Words,
-
-    /// An optional BIP39 passphrase.
-    #[arg(short = 'p', long = "passphrase", default_value_t = String::new())]
-    passphrase: String,
-
-    /// The Network you want to derive accounts on.
-    #[arg(short = 'n', long = "network_id", value_parser = NetworkID::from_str, default_value_t = NetworkID::Mainnet)]
-    network_id: NetworkID,
-
-    /// The account index
-    #[arg(short = 'i', long = "index", default_value_t = 0)]
-    index: u32,
-}
-
-impl std::fmt::Display for Config {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "Mnemonic: {}", self.mnemonic)?;
-        writeln!(f, "Passphrase: {}", self.passphrase)?;
-        writeln!(f, "NetworkID: {}", self.network_id)?;
-        writeln!(f, "Index: {}", self.index)?;
-        Ok(())
-    }
 }
 
 fn read_config_from_stdin() -> Result<Config> {

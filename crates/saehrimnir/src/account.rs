@@ -1,11 +1,12 @@
 use crate::prelude::*;
 
 use ed25519_dalek::{PublicKey, SecretKey};
+use zeroize::Zeroize;
 
 /// A tuple of keys and Radix Babylon Account address, for a
 /// virtual account - an account that the Radix Public Ledger
 /// knows nothing about (if you haven't used this account before that is).
-#[derive(ZeroizeOnDrop)]
+#[derive(ZeroizeOnDrop, Zeroize)]
 pub struct Account {
     /// The network used to derive the `address`.
     pub network_id: NetworkID,
@@ -74,6 +75,8 @@ impl Account {
 mod tests {
 
     use crate::prelude::*;
+    use std::ops::Range;
+    use zeroize::Zeroize;
 
     fn test(
         mnemonic: Mnemonic24Words,
@@ -112,6 +115,39 @@ mod tests {
         }
         fn test_1() -> Self {
             "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote".parse().unwrap()
+        }
+    }
+
+    #[test]
+    fn zeroize_account_private_key_is_zeroized() {
+        let mnemonic = Mnemonic24Words::new([
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff,
+        ]);
+        let path: AccountPath = "m/44H/1022H/1H/525H/1460H/0H".parse().unwrap();
+        let mut account = Account::derive(&mnemonic, "", &path);
+
+        let private_key_view = &account.private_key as *const _ as *const u8;
+        let private_key_range = Range { start: 0, end: 32 };
+
+        let mut key_bytes = Vec::<u8>::new();
+        for i in private_key_range.clone() {
+            key_bytes.push(unsafe { *private_key_view.offset(i) })
+        }
+
+        // Expected private key given the mnemonic and path, see unit test
+        // "derive_account_mnemonic_1_without_passphrase_mainnet_index_0" below.
+        let key_hex = "2bd55b473c972e32667582acd73653b67f7d56a74f9aab3f73126a7b7ad49de6";
+
+        assert_eq!(account.private_key.to_hex(), key_hex);
+        assert_eq!(hex::encode(key_bytes), key_hex);
+
+        account.zeroize();
+
+        // Assert that private key has been zeroized.
+        for i in private_key_range {
+            assert_eq!(unsafe { *private_key_view.offset(i) }, 0x00);
         }
     }
 
