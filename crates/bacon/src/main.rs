@@ -1,8 +1,10 @@
 mod config;
+mod read_config_from_stdin;
 use crate::config::Config;
+use crate::read_config_from_stdin::*;
 
 use clap::{Parser, Subcommand};
-use inquire::{CustomType, Password, Select};
+
 use saehrimnir::prelude::*;
 
 use pager::Pager;
@@ -20,6 +22,10 @@ Generate Radix Babylon accounts - private (and public) keys and addresses given 
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
+
+    /// If the PrivateKey of derived accounts is included in output.
+    #[arg(short, long, default_value_t = false)]
+    pub(crate) include_private_key: bool,
 }
 
 #[derive(Subcommand)]
@@ -34,45 +40,6 @@ impl Commands {
             Commands::Pager => true,
         }
     }
-}
-
-fn read_config_from_stdin() -> Result<Config> {
-    let mnemonic = CustomType::<Mnemonic24Words>::new("Input mnemonic: ")
-        .with_formatter(&|m| format!("{}", m))
-        .with_error_message("Please type a valid mnemonic")
-        .with_help_message("Only English 24 word mnemonics are supported.")
-        .prompt()
-        .map_err(|_| Error::InvalidMnemonic)?;
-
-    let passphrase = Password::new("Passphrase (can be empty):")
-        .prompt()
-        .unwrap();
-
-    let network: NetworkID = Select::new("Choose Network", NetworkID::all())
-        .prompt()
-        .expect("Should not be possible to select in invalid network id");
-
-    let start = CustomType::<HDPathComponentValue>::new("Account index start: ")
-        .with_formatter(&|i| format!("{}H", i))
-        .with_error_message("Only non negative integers <= 2,147,483,648 are allowed")
-        .with_help_message("Normally you want to start at index `0`.")
-        .prompt()
-        .expect("Should not be possible to input an invalid u32");
-
-    let count = CustomType::<u8>::new("Number of accounts to derive: ")
-        .with_formatter(&|i| format!("{}H", i))
-        .with_error_message("Only non negative integers <= 255 are allowed")
-        .with_help_message("If you need more than 255 to be derived, let us know!.")
-        .prompt()
-        .expect("Should not be possible to input an invalid u8");
-
-    Ok(Config {
-        mnemonic,
-        passphrase,
-        network,
-        start,
-        count,
-    })
 }
 
 fn paged() {
@@ -96,6 +63,7 @@ fn main() {
     }
     .expect("Valid config");
 
+    let include_private_key = cli.include_private_key;
     let mut zeroized_accounts = true;
 
     let start = config.start;
@@ -104,7 +72,7 @@ fn main() {
     for index in (Range { start, end }) {
         let account_path = AccountPath::new(&config.network, index);
         let mut account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
-        print_account(&account);
+        print_account(&account, include_private_key);
         account.zeroize();
         zeroized_accounts &= account.is_zeroized();
     }
@@ -120,13 +88,19 @@ fn main() {
 
 const WIDTH: usize = 50;
 
-fn print_account(account: &Account) {
+fn print_account(account: &Account, include_private_key: bool) {
     let delimiter = "✨".repeat(WIDTH);
     let header_delimiter = "🔮".repeat(WIDTH);
     let header = ["✅ CREATED ACCOUNT ✅", &header_delimiter].join("\n");
-    let new_account_string =
-        [delimiter.clone(), header, format!("{account}"), delimiter].join("\n");
-    println!("\n{new_account_string}");
+    let account_string = account.to_string_include_private_key(include_private_key);
+    let output = [
+        delimiter.clone(),
+        header,
+        format!("{account_string}"),
+        delimiter,
+    ]
+    .join("\n");
+    println!("\n{output}");
 }
 
 fn print_secrets_safe() {

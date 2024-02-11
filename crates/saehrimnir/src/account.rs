@@ -6,7 +6,8 @@ use zeroize::Zeroize;
 /// A tuple of keys and Radix Babylon Account address, for a
 /// virtual account - an account that the Radix Public Ledger
 /// knows nothing about (if you haven't used this account before that is).
-#[derive(ZeroizeOnDrop, Zeroize)]
+#[derive(ZeroizeOnDrop, Zeroize, derive_more::Display)]
+#[display("{}", self.to_string_include_private_key(false))]
 pub struct Account {
     /// The network used to derive the `address`.
     pub network_id: NetworkID,
@@ -34,20 +35,32 @@ pub struct Account {
     pub factor_source_id: FactorSourceID,
 }
 
-impl std::fmt::Display for Account {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "Factor Source ID: {}", self.factor_source_id)?;
-        writeln!(f, "Address: {}", self.address)?;
-        writeln!(f, "Network: {}", self.network_id)?;
-        writeln!(f, "Index: {}", self.index)?;
-        writeln!(f, "HD Path: {}", self.path)?;
-        writeln!(f, "PrivateKey: {}", self.private_key.to_hex())?;
-        write!(f, "PublicKey: {}", self.public_key.to_hex())?;
-        Ok(())
-    }
-}
-
 impl Account {
+    pub fn to_string_include_private_key(&self, include_private_key: bool) -> String {
+        let private_key_or_empty = if include_private_key {
+            format!("\nPrivateKey: {}", self.private_key.to_hex())
+        } else {
+            "".to_owned()
+        };
+        format!(
+            "
+Factor Source ID: {}
+Address: {}
+Network: {}
+Index: {}
+HD Path: {}{}
+PublicKey: {}
+",
+            self.factor_source_id,
+            self.address,
+            self.network_id,
+            self.index,
+            self.path,
+            private_key_or_empty,
+            self.public_key.to_hex()
+        )
+    }
+
     /// Derives a simple [`Account`] using the `mnemonic` and BIP39 `passphrase` (can be the empty string) using the hierarchical deterministic derivation path `path`.
     ///
     /// See [`Account`] for more details, but in short it is an Address + key pair.
@@ -86,6 +99,15 @@ mod tests {
     use crate::prelude::*;
     use std::ops::Range;
     use zeroize::Zeroize;
+
+    #[test]
+    fn to_string_include_private_key() {
+        let path: AccountPath = "m/44H/1022H/1H/525H/1460H/0H".parse().unwrap();
+        let account = Account::derive(&Mnemonic24Words::test_0(), "", &path);
+        let expected = "\nFactor Source ID: 6facb00a836864511fdf8f181382209e64e83ad462288ea1bc7868f236fb8033\nAddress: account_rdx128vge9xzep4hsn4pns8qch5uqld2yvx6f3gfff786du7vlk6w6e6k4\nNetwork: Mainnet\nIndex: 0\nHD Path: m/44H/1022H/1H/525H/1460H/0H\nPrivateKey: 7b21b62816c6349293abc3a8c37470f917ae621ada2eb8d5124250e83b78f7ef\nPublicKey: 6224937b15ec4017a036c0bd6999b7fa2b9c2f9452286542fd56f6a3fb6d33ed\n";
+
+        assert_eq!(account.to_string_include_private_key(true), expected);
+    }
 
     fn test(
         mnemonic: Mnemonic24Words,
