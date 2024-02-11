@@ -1,8 +1,10 @@
 use crate::prelude::*;
+use zeroize::ZeroizeOnDrop;
 
 /// A guaranteed 24 words long BIP39 mnemonic.
-#[derive(Debug, Clone, PartialEq, Eq, derive_more::Display)]
-pub struct Mnemonic24Words(bip39::Mnemonic);
+#[derive(Debug, Clone, PartialEq, Eq, derive_more::Display, ZeroizeOnDrop)]
+#[display("{}", self.phrase())]
+pub struct Mnemonic24Words(Vec<u8>);
 
 impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
     type Error = crate::Error;
@@ -14,14 +16,24 @@ impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
                 found: value.word_count(),
             });
         }
-        Ok(Self(value))
+        Ok(Self(value.to_entropy()))
+    }
+}
+
+impl Mnemonic24Words {
+    pub fn phrase(&self) -> String {
+        self.wrapped().to_string()
+    }
+    fn wrapped(&self) -> bip39::Mnemonic {
+        bip39::Mnemonic::from_entropy(self.0.as_slice())
+            .expect("Should always be able to create a BIP39 mnemonic.")
     }
 }
 
 impl Mnemonic24Words {
     pub const WORD_COUNT: usize = 24;
     pub fn to_seed(&self, passphrase: impl AsRef<str>) -> [u8; 64] {
-        self.0.to_seed(passphrase.as_ref())
+        self.wrapped().to_seed(passphrase.as_ref())
     }
 }
 
@@ -57,5 +69,14 @@ mod tests {
     fn word_count_of_24_works() {
         let s = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote";
         assert_eq!(s.parse::<Mnemonic24Words>().unwrap().to_string(), s);
+    }
+
+    #[test]
+    fn entropy() {
+        let s = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote";
+        assert_eq!(
+            hex::encode(s.parse::<Mnemonic24Words>().unwrap().wrapped().to_entropy()),
+            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        );
     }
 }

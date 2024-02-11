@@ -20,7 +20,7 @@ let path = AccountPath::new(
 let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 
 // Derive Babylon Radix account...
-let account = derive_account(
+let account = Account::derive(
 	&mnemonic, 
 	"radix", // BIP39 passphrase (can be empty string)
 	&path

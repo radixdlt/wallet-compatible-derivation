@@ -104,6 +104,6 @@ fn main() {
     .expect("Valid config");
 
     let account_path = AccountPath::new(config.network_id, config.index);
-    let account = derive_account(&config.mnemonic, config.passphrase, &account_path);
+    let account = Account::derive(&config.mnemonic, config.passphrase, &account_path);
     println!("Account:\n{}", account);
 }

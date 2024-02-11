@@ -22,7 +22,7 @@
 //! let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 //!
 //! // Derive Babylon Radix account...
-//! let account = derive_account(&mnemonic, "radix", &path);
+//! let account = Account::derive(&mnemonic, "radix", &path);
 //!
 //! // ... containing the Account Address
 //! assert_eq!(account.address, "account_rdx12yy8n09a0w907vrjyj4hws2yptrm3rdjv84l9sr24e3w7pk7nuxst8");
@@ -35,19 +35,26 @@ mod account;
 mod account_path;
 mod bip32_path;
 mod derive_account_address;
+mod derive_key_pair;
 mod error;
+mod factor_source_id;
 mod mnemonic_24words;
 mod network_id;
+mod to_hex;
 
 pub mod prelude {
     pub use crate::account::*;
     pub use crate::account_path::*;
     pub use crate::bip32_path::*;
-    pub use crate::derive_account_address::*;
+
     pub use crate::error::*;
+    pub use crate::factor_source_id::*;
     pub use crate::mnemonic_24words::*;
     pub use crate::network_id::*;
+    pub use crate::to_hex::*;
 
+    pub(crate) use crate::derive_account_address::*;
+    pub(crate) use crate::derive_key_pair::*;
     pub(crate) use std::str::FromStr;
 }
 
