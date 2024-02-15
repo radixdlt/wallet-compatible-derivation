@@ -1,5 +1,5 @@
 [package]
-name = "saehrimnir"
+name = "wallet_compatible_derivation"
 version = "0.1.0"
 edition = "2021"
 

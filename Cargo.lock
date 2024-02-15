@@ -57,17 +57,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
-name = "bacon"
-version = "0.1.0"
-dependencies = [
- "clap",
- "inquire",
- "pager",
- "saehrimnir",
- "zeroize",
-]
-
-[[package]]
 name = "bech32"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -880,25 +869,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
-name = "saehrimnir"
-version = "0.1.0"
-dependencies = [
- "bip39",
- "derive_more",
- "ed25519-dalek",
- "enum-iterator",
- "hex",
- "itertools 0.12.1",
- "radix-engine-common",
- "scrypto",
- "slip10",
- "strum 0.26.1",
- "strum_macros 0.26.1",
- "thiserror",
- "zeroize",
-]
-
-[[package]]
 name = "sbor"
 version = "1.1.1"
 source = "git+https://github.com/radixdlt/radixdlt-scrypto#fc196e21aacc19c0a3dbb13f3cd313dccf4327ca"
@@ -1312,6 +1282,36 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
+
+[[package]]
+name = "wallet_compatible_derivation"
+version = "0.1.0"
+dependencies = [
+ "bip39",
+ "derive_more",
+ "ed25519-dalek",
+ "enum-iterator",
+ "hex",
+ "itertools 0.12.1",
+ "radix-engine-common",
+ "scrypto",
+ "slip10",
+ "strum 0.26.1",
+ "strum_macros 0.26.1",
+ "thiserror",
+ "zeroize",
+]
+
+[[package]]
+name = "wallet_compatible_derivation_cli"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "inquire",
+ "pager",
+ "wallet_compatible_derivation",
+ "zeroize",
+]
 
 [[package]]
 name = "wasi"

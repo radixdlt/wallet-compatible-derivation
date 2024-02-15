@@ -1,7 +1,5 @@
-use radix_engine_common::crypto::{blake2b_256_hash, IsHash};
-use zeroize::Zeroize;
-
 use crate::prelude::*;
+use radix_engine_common::crypto::{blake2b_256_hash, IsHash};
 
 /// A safe to use hex encoding of the hash of a public key at a special node in your BIP39 Seed,
 /// This ID is used to identify that two accounts have been derived from the same mnemonic.
@@ -20,6 +18,9 @@ impl ToHex for FactorSourceID {
 }
 
 impl FactorSourceID {
+    /// Creates a SAFE to use ID from a hierarchal deterministic tree's `seed`, by
+    /// deriving a special public key at a non-leaf (non account) node in the tree,
+    /// and then hashing that public key, using the `blake2b_256_hash` algorithm.
     pub(crate) fn from_seed(seed: &[u8]) -> Self {
         let components: Vec<HDPathComponentValue> = vec![PURPOSE, COINTYPE, harden(365)];
         let path = slip10::path::BIP32Path::from(components);

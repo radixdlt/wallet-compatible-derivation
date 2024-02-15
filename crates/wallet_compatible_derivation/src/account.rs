@@ -1,7 +1,6 @@
 use crate::prelude::*;
 
 use ed25519_dalek::{PublicKey, SecretKey};
-use zeroize::Zeroize;
 
 /// A tuple of keys and Radix Babylon Account address, for a
 /// virtual account - an account that the Radix Public Ledger
@@ -10,6 +9,7 @@ use zeroize::Zeroize;
 #[display("{}", self.to_string_include_private_key(false))]
 pub struct Account {
     /// The network used to derive the `address`.
+    #[zeroize(skip)]
     pub network_id: NetworkID,
 
     /// The private key controlling this account - assuming that you have
@@ -98,7 +98,6 @@ mod tests {
 
     use crate::prelude::*;
     use std::ops::Range;
-    use zeroize::Zeroize;
 
     #[test]
     fn to_string_include_private_key() {

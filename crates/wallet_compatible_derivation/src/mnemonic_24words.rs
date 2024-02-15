@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use zeroize::{Zeroize, ZeroizeOnDrop};
 
 /// A guaranteed 24 words long BIP39 mnemonic.
 ///
@@ -9,7 +8,7 @@ use zeroize::{Zeroize, ZeroizeOnDrop};
 pub struct Mnemonic24Words([u8; 32]);
 
 impl Mnemonic24Words {
-    pub fn new(entropy: [u8; 32]) -> Self {
+    pub(crate) fn new(entropy: [u8; 32]) -> Self {
         Self(entropy)
     }
 }
@@ -17,6 +16,8 @@ impl Mnemonic24Words {
 impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
     type Error = crate::Error;
 
+    /// Tries to convert a `bip39` crate `Mnemonic` into `Mnemonic24Words`,
+    /// will fail if the word count is not 24.
     fn try_from(value: bip39::Mnemonic) -> Result<Self> {
         if value.word_count() != Self::WORD_COUNT {
             return Err(Error::UnsupportedMnemonicTooFewWords {
@@ -33,9 +34,12 @@ impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
 }
 
 impl Mnemonic24Words {
+    /// Formats 24 words as a single mnemonic phrase, with space (" ") joining 
+    /// the words.
     pub fn phrase(&self) -> String {
         self.wrapped().to_string()
     }
+
     fn wrapped(&self) -> bip39::Mnemonic {
         bip39::Mnemonic::from_entropy(self.0.as_slice())
             .expect("Should always be able to create a BIP39 mnemonic.")
@@ -87,8 +91,6 @@ impl FromStr for Mnemonic24Words {
 mod tests {
     use std::mem;
     use std::ops::Range;
-
-    use zeroize::Zeroize;
 
     use crate::prelude::*;
 

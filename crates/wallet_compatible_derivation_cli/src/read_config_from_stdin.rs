@@ -1,7 +1,13 @@
 use crate::config::Config;
 use inquire::{CustomType, Password, Select};
-use saehrimnir::prelude::*;
+use wallet_compatible_derivation::prelude::*;
 
+/// An interactive part of the program which asks user for input, most 
+/// prominently it asks the user for to input the Mnemonic. The user 
+/// MUST be aware of keyloggers on her computer, this software does
+/// not (yet) protect against that. Future iterations of this software
+/// might impl a random order interactive picker of characters/words
+/// allowing user to safeguard against keyloggers.
 pub(crate) fn read_config_from_stdin() -> Result<Config> {
     let mnemonic = CustomType::<Mnemonic24Words>::new("Input mnemonic: ")
         .with_formatter(&|m| format!("{}", m))
