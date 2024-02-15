@@ -5,14 +5,14 @@ use crate::read_config_from_stdin::*;
 
 use clap::{Parser, Subcommand};
 
-use saehrimnir::prelude::*;
+use wallet_compatible_derivation::prelude::*;
 
 use pager::Pager;
 use std::{ops::Range, thread, time};
 use zeroize::Zeroize;
 
 #[derive(Parser)]
-#[command(name = "bacon", version)]
+#[command(name = "wallet_compatible_derivation_cli", version)]
 #[command(
 about = "Babylon Account CreatiON.",
 long_about = format!(r#"

@@ -1,6 +1,9 @@
 [workspace]
 resolver = "2"
-members = ["crates/saehrimnir", "crates/bacon"]
+members = [
+    "crates/wallet_compatible_derivation",
+    "crates/wallet_compatible_derivation_cli",
+]
 
 [workspace.dependencies]
 thiserror = { version = "1.0.56" }

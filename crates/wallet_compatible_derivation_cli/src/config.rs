@@ -1,5 +1,5 @@
 use clap::Args;
-use saehrimnir::prelude::*;
+use wallet_compatible_derivation::prelude::*;
 
 use std::str::FromStr;
 use zeroize::{Zeroize, ZeroizeOnDrop};
@@ -20,6 +20,7 @@ pub(crate) struct Config {
 
     /// The Network you want to derive accounts on.
     #[arg(short = 'n', long = "network", help = "The ID of the Radix Network the derived accounts should be used with.", value_parser = NetworkID::from_str, default_value_t = NetworkID::Mainnet)]
+    #[zeroize(skip)]
     pub(crate) network: NetworkID,
 
     /// The start account index

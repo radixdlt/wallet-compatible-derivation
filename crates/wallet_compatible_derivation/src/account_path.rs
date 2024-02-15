@@ -53,8 +53,8 @@ pub type EntityIndex = u32;
 /// `"m/44H/1022H/1H/525H/1460H/1H"`.
 ///
 /// ```
-/// extern crate saehrimnir;
-/// use saehrimnir::prelude::*;
+/// extern crate wallet_compatible_derivation;
+/// use wallet_compatible_derivation::prelude::*;
 ///
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
 /// ```

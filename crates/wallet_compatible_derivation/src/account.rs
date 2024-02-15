@@ -10,6 +10,7 @@ use zeroize::Zeroize;
 #[display("{}", self.to_string_include_private_key(false))]
 pub struct Account {
     /// The network used to derive the `address`.
+    #[zeroize(skip)]
     pub network_id: NetworkID,
 
     /// The private key controlling this account - assuming that you have

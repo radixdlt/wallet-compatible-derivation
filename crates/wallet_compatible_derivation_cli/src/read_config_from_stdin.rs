@@ -1,6 +1,6 @@
 use crate::config::Config;
 use inquire::{CustomType, Password, Select};
-use saehrimnir::prelude::*;
+use wallet_compatible_derivation::prelude::*;
 
 pub(crate) fn read_config_from_stdin() -> Result<Config> {
     let mnemonic = CustomType::<Mnemonic24Words>::new("Input mnemonic: ")
