@@ -5,6 +5,8 @@ This repo is a package containing two crates - a library named `wallet_compatibl
 > [!IMPORTANT]  
 > You are responsible for retaining sole possession and ownership of, and for securing
 > the mnemonics (seed phrase(s)) you use with this software.
+>
+> You are responsible for reading the Security and License sections of this README respectively to understand the risks of using this software.
 
 This software created Radix Babylon account address from hierarchical deterministic key pairs, derived using wallet compatible derivation paths which are compatible with the [Radix Wallet][wallet] available on iOS and Android. This means that the same (KeyPair, Address) tuples, contiguously, will be created by this software and the Radix Wallet software, for any given (Mnemonic, BIP39 Passphrase, NetworkID) triple as input. Or in other words, given Mnemonic `M`, no BPI39 passphrase, if the Radix Wallet will create account `A, B, C` at indices `0`, `1` and `2`, so will this software.
 
@@ -117,6 +119,14 @@ wallet_compatible_derivation_cli no-pager --help
 ```
 
 # Security
+
+> [!IMPORTANT]  
+> Beware of key-loggers! This software does not protect against any key-logging 
+> malware your computer might be infected with. Even in `pager` mode, you are 
+> asked to type in your mnemonic and if your computer is infected by a key-logger 
+> malware you might loose all your funds.
+
+Future iterations of this software might implement an interactive "picker" of characters/words in randomized order to allow safe input of your mnemonic, but there is no planned release date for such a few feature.
 
 All sensitive types of the `wallet_compatible_derivation` library implement the traits
 `ZeroizeOnDrop` and `Zeroize` part of [the `zeroize` crate](https://docs.rs/zeroize/1.7.0/zeroize/) meaning that the secrets are/can easily be "zeroed out"/wiped, ensuring that those secrets are not kept around anywhere in memory. 
