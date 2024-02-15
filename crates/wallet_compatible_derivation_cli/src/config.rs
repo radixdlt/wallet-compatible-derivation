@@ -4,6 +4,12 @@ use wallet_compatible_derivation::prelude::*;
 use std::str::FromStr;
 use zeroize::{Zeroize, ZeroizeOnDrop};
 
+/// A run configuration for the binary `wallet_compatible_derivation_cli`.
+///
+/// Contains secrets, thus it implements `Zeroize`.
+///
+/// As soon as this run configuration is no longer needed, it should be zeroized
+/// and dropped.
 #[derive(Debug, Args, Zeroize, ZeroizeOnDrop)]
 pub(crate) struct Config {
     /// The mnemonic you wanna use to derive accounts with.
@@ -40,17 +46,6 @@ pub(crate) struct Config {
         default_value_t = 2
     )]
     pub(crate) count: u8,
-}
-
-impl std::fmt::Display for Config {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "Mnemonic: {}", self.mnemonic)?;
-        writeln!(f, "Passphrase: {}", self.passphrase)?;
-        writeln!(f, "Network: {}", self.network)?;
-        writeln!(f, "Start Index: {}", self.start)?;
-        writeln!(f, "Number of accounts: {}", self.count)?;
-        Ok(())
-    }
 }
 
 #[cfg(test)]

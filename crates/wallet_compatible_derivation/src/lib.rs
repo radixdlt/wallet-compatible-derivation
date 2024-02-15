@@ -69,7 +69,7 @@ pub mod prelude {
     pub(crate) use crate::derive_account_address::*;
     pub(crate) use crate::derive_key_pair::*;
     pub(crate) use std::str::FromStr;
-    pub(crate) use zeroize::ZeroizeOnDrop;
+    pub(crate) use zeroize::{Zeroize, ZeroizeOnDrop};
 }
 
 pub use prelude::*;
