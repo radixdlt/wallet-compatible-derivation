@@ -1,57 +1,52 @@
 use crate::prelude::*;
 
-/// A Radix Babylon BIP32 path use to derive accounts, e.g.:
-/// `"m/44'/1022'/1'/525'/1460'/2'"`
+/// A Radix Babylon [BIP-32][bip32] path used to derive accounts, for example `m/44'/1022'/1'/525'/1460'/2'`.
 ///
-/// It has 6 levels:
-/// `m / purpose' / coin_type' / network' / 525 / 1460' / index'`
+/// This comes from the general derivation pattern for Radix addresses according to the [SLIP-10][slip10] 
+/// derivation scheme. In the [SLIP-10][slip10] derivation scheme, every level must be hardened, which
+/// is denoted by the `'` or `H` suffix. The official Radix wallet uses 6 levels:
 ///
-/// So the example path above has network `1`, being mainnet, and `2` being the third account.
+/// ```text
+/// m / purpose' / coin_type' / network' / entity_kind' / key_kind' / entity_index'
+/// ```
 ///
-/// The levels can more generally be described as:
-/// `m / purpose' / coin_type' / network' / ACCOUNT_KIND / TX_SIGNING' / index'`
+/// The `AccountPath` struct is parametrized by Radix network id and account index, but fixes the other
+/// constants in the path as follows:
 ///
-/// Or even more general:
-/// `m / purpose' / coin_type' / network' / entity_kind / key_kind' / index'`
+/// ```text
+/// m / 44' / 1022' / NETWORK_ID' / 525' / 1460' / ACCOUNT_INDEX'
+/// ```
 ///
-/// Account's are not the only `entity_kind` the Radix Wallet's use, the Personas
-/// use a different derivation path, with a different value on `entity_kind` (`618'`)
+/// More generally:
+/// * `purpose` is fixed as `44` as per [BIP-44][bip44].
+/// * `coin_type` is fixed as `1022` for Radix as per [SLIP-0044][slip44].
+/// * `network` is the Radix network id (1 for `mainnet`, 2 for `stokenet`, ...).
+/// * `entity_kind` is the type of Radix entity which keys are being generated for. Possible values include:
+///   * 525 - Pre-allocated [accounts][account].
+///   * 618 - Pre-allocated [identities][identity], which are used for [ROLA][rola] for personas.
+/// * `key_kind` is the type of key. Possible values include:
+///   * 1460 - Transaction Signing (the default).
+///   * 1678 - Authentication Signing such as [ROLA][rola]. This is used if a separate key is
+///     created for ROLA and stored in account metadata. 
+/// * `entity_index` is the 0-based index of the particular entity which is being derived.
 ///
-/// There are also other `key_kind`s used by the Radix Wallet, one for [ROLA][rola] (if set, value `1678'`),
-/// and another for reserved for an upcoming feature.
-///
-/// Since we used [SLIP10][slip10] derivation scheme, every level MUST be hardened,
-/// which `'` denotes.
+/// See `test_asciisum` for the source of the `entity_kind` and `key_kind` numbers.
 ///
 /// ```
 /// extern crate wallet_compatible_derivation;
 /// use wallet_compatible_derivation::prelude::*;
 ///
 /// assert!("m/44'/1022'/1'/525'/1460'/1'".parse::<AccountPath>().is_ok());
-/// ```
-///
-/// But we tend to prefer `H` notation over `'` to denote that a component is hardened, so
-/// throughout docs and unit tests you will see `H`.
-///
-/// ```
-/// extern crate wallet_compatible_derivation;
-/// use wallet_compatible_derivation::prelude::*;
-///
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
 /// ```
 ///
-/// Possible values for `entity_kind` include:
-/// * 525 - Pre-allocated Accounts
-/// * 618 - Pre-allocated Identities - AKA personas, which are used for [ROLA][rola]
-///
-/// Possible values for `key_kind` include:
-/// * 1460 - Transaction Signing
-/// * 1678 - Authentication Signing such as [ROLA][rola]
-///
-/// See `test_asciisum` for the source of these numbers.
-///
+/// [bip32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+/// [bip44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 /// [slip10]: https://github.com/satoshilabs/slips/blob/master/slip-0010.md
-/// [rola]: https://docs-babylon.radixdlt.com/main/frontend/rola.html
+/// [slip44]: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+/// [rola]: https://docs.radixdlt.com/docs/rola-radix-off-ledger-auth
+/// [account]: https://docs.radixdlt.com/docs/account
+/// [identity]: https://docs.radixdlt.com/docs/identity
 #[derive(
     Zeroize, ZeroizeOnDrop, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, derive_more::Display,
 )]
@@ -133,11 +128,11 @@ impl AccountPath {
     /// see [`NetworkID`].
     pub(crate) const IDX_NETWORK_ID: usize = 2;
 
-    /// The entity_kind path component, must be `ENTITY_KIND_ACCOUNT` for
+    /// The `entity_kind` path component, must be `ENTITY_KIND_ACCOUNT` for
     /// `AccountPath`.
     pub(crate) const IDX_ENTITY_KIND: usize = 3;
 
-    /// The kind_kind path component, must be `TRANSACTION_SIGNING` for
+    /// The `key_kind` path component, must be `TRANSACTION_SIGNING` for
     /// virtual account derivation.
     pub(crate) const IDX_KEY_KIND: usize = 4;
 
