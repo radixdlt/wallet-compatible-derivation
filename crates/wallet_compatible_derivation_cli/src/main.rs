@@ -108,7 +108,7 @@ fn print_secrets_safe() {
     let safe = [
         "\n\n",
         &delimiter,
-        "🔐 All sensitive data have been zeroized, your secrets are safe 🔐",
+        "🔐 Sensitive data have been zeroized (but our terminal app might have kept state!)",
         &delimiter,
     ]
     .join("\n");

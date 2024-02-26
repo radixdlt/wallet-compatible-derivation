@@ -15,9 +15,9 @@ use crate::prelude::*;
 /// `m / purpose' / coin_type' / network' / entity_kind / key_kind' / index'`
 ///
 /// Account's are not the only `entity_kind` the Radix Wallet's use, the Personas
-/// use a different derivation path, with a different value on `entity_kind`.
+/// use a different derivation path, with a different value on `entity_kind` (`618'`)
 ///
-/// There are also other `key_kind`s used by the Radix Wallet, one for [ROLA][rola] (if set),
+/// There are also other `key_kind`s used by the Radix Wallet, one for [ROLA][rola] (if set, value `1678'`),
 /// and another for reserved for an upcoming feature.
 ///
 /// Since we used [SLIP10][slip10] derivation scheme, every level MUST be hardened,
@@ -38,6 +38,19 @@ use crate::prelude::*;
 /// use wallet_compatible_derivation::prelude::*;
 ///
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
+/// ```
+///
+/// Trivia:
+/// If you wonder why the arbitrary values 525'/618' and 1460'/1678', they are
+/// in fact ASCII sums:
+///
+/// ```
+/// let ascii_sum = |s: &str| s.chars().into_iter().fold(0, |acc, c| acc + c as u64);
+/// assert_eq!(ascii_sum("ACCOUNT"), 525);
+/// assert_eq!(ascii_sum("IDENTITY"), 618);
+/// assert_eq!(ascii_sum("TRANSACTION_SIGNING"), 1460);
+/// assert_eq!(ascii_sum("AUTHENTICATION_SIGNING"), 1678);
+/// assert_eq!(ascii_sum("GETID"), 365);
 /// ```
 ///
 /// [slip10]: https://github.com/satoshilabs/slips/blob/master/slip-0010.md
@@ -119,7 +132,7 @@ impl AccountPath {
     /// [slip]: https://github.com/satoshilabs/slips/pull/1137
     pub(crate) const IDX_COINTYPE: usize = 1;
 
-    /// The id of the network this account can be used on, 
+    /// The id of the network this account can be used on,
     /// see [`NetworkID`].
     pub(crate) const IDX_NETWORK_ID: usize = 2;
 
@@ -127,7 +140,7 @@ impl AccountPath {
     /// `AccountPath`.
     pub(crate) const IDX_ENTITY_KIND: usize = 3;
 
-    /// The kind_kind path component, must be `TRANSACTION_SIGNING` for 
+    /// The kind_kind path component, must be `TRANSACTION_SIGNING` for
     /// virtual account derivation.
     pub(crate) const IDX_KEY_KIND: usize = 4;
 
@@ -224,5 +237,16 @@ mod tests {
         assert_eq!(path.to_string(), s);
         assert_eq!(path.network_id(), NetworkID::Mainnet);
         assert_eq!(path.account_index(), 0);
+    }
+
+
+    #[test]
+    fn test_asciisum() {
+        let ascii_sum = |s: &str| s.chars().into_iter().fold(0, |acc, c| acc + c as u64);
+        assert_eq!(ascii_sum("ACCOUNT"), 525);
+        assert_eq!(ascii_sum("IDENTITY"), 618);
+        assert_eq!(ascii_sum("TRANSACTION_SIGNING"), 1460);
+        assert_eq!(ascii_sum("AUTHENTICATION_SIGNING"), 1678);
+        assert_eq!(ascii_sum("GETID"), 365);
     }
 }
