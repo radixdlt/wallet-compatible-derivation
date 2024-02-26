@@ -1,8 +1,8 @@
 use crate::prelude::*;
 
-/// A guaranteed 24 words long BIP39 mnemonic.
+/// A guaranteed 24 words long BIP-39 mnemonic.
 ///
-/// Holds the BIP39 entropy - 32 bytes.
+/// Holds the BIP-39 entropy - 32 bytes.
 #[derive(Debug, Clone, PartialEq, Eq, derive_more::Display, ZeroizeOnDrop, Zeroize)]
 #[display("{}", self.phrase())]
 pub struct Mnemonic24Words([u8; 32]);
@@ -42,7 +42,7 @@ impl Mnemonic24Words {
 
     fn wrapped(&self) -> bip39::Mnemonic {
         bip39::Mnemonic::from_entropy(self.0.as_slice())
-            .expect("Should always be able to create a BIP39 mnemonic.")
+            .expect("Should always be able to create a BIP-39 mnemonic.")
     }
 
     pub fn is_zeroized(&self) -> bool {

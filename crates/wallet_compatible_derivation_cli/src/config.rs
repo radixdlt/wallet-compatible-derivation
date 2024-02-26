@@ -16,12 +16,12 @@ pub(crate) struct Config {
     #[arg(
         short = 'm',
         long = "mnemonic", 
-        help = "The BIP39 Mnemonic ('Seed Phrase') used to derive the accounts. Must be a 24 word English Mnemonic.", value_parser = Mnemonic24Words::from_str
+        help = "The BIP-39 Mnemonic ('Seed Phrase') used to derive the accounts. Must be a 24 word English Mnemonic.", value_parser = Mnemonic24Words::from_str
     )]
     pub(crate) mnemonic: Mnemonic24Words,
 
-    /// An optional BIP39 passphrase.
-    #[arg(short = 'p', long = "passphrase", help = "Advanced: An optional BIP39 passphrase, use the empty string if you don't need one. Often referred to as 'the 25th word'. For extra security.", default_value_t = String::new())]
+    /// An optional BIP-39 passphrase.
+    #[arg(short = 'p', long = "passphrase", help = "Advanced: An optional BIP-39 passphrase, use the empty string if you don't need one. Often referred to as 'the 25th word'. For extra security.", default_value_t = String::new())]
     pub(crate) passphrase: String,
 
     /// The Network you want to derive accounts on.

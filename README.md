@@ -8,9 +8,9 @@ This repo is a package containing two crates - a library named `wallet_compatibl
 >
 > You are responsible for reading the Security and License sections of this README respectively to understand the risks of using this software.
 
-This software created Radix Babylon account address from hierarchical deterministic key pairs, derived using wallet compatible derivation paths which are compatible with the [Radix Wallet][wallet] available on iOS and Android. This means that the same (KeyPair, Address) tuples, contiguously, will be created by this software and the Radix Wallet software, for any given (Mnemonic, BIP39 Passphrase, NetworkID) triple as input. Or in other words, given Mnemonic `M`, no BPI39 passphrase, if the Radix Wallet will create account `A, B, C` at indices `0`, `1` and `2`, so will this software.
+This software created Radix Babylon account address from hierarchical deterministic key pairs, derived using wallet compatible derivation paths which are compatible with the [Radix Wallet][wallet] available on iOS and Android. This means that the same (KeyPair, Address) tuples, contiguously, will be created by this software and the Radix Wallet software, for any given (Mnemonic, BIP-39 Passphrase, NetworkID) triple as input. Or in other words, given Mnemonic `M` and no BIP-39 passphrase, if the Radix Wallet will create account `A, B, C` at indices `0`, `1` and `2`, so will this software.
 
-In order to stay compatible with the Radix Wallet, this software requires 24 words mnemonics, and to be fully compatible, best not use any BIP39 passphrase (use empty string).
+In order to stay compatible with the Radix Wallet, this software requires 24 words mnemonics, and to be fully compatible, do not use any BIP-39 passphrase (use an empty string).
 
 The cryptographic curve used is [Curve25519][curve] (again, just like the Radix Wallet), and derivation scheme is [SLIP-10][slip10] - and extension of [BIP-32][b32] made to support other curves than "the Bitcoin curve". The derivation path scheme is inspired by [BIP-44][b44], but is more advanced (see [`AccountPath`][account_path] for details), and is built for maximum key isolation, for security.
 
@@ -32,13 +32,13 @@ let path = AccountPath::new(
 	0 // Account Index, 0 is first.
 );
 
-// 24 word BIP39 English mnemonic
+// 24 word BIP-39 English mnemonic
 let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 
 // Derive Babylon Radix account...
 let account = Account::derive(
 	&mnemonic, 
-	"radix", // BIP39 passphrase (can be empty string)
+	"radix", // BIP-39 passphrase (can be empty string)
 	&path
 );
 
@@ -65,7 +65,7 @@ assert_eq!(second_account.address, "account_rdx129a9wuey40lducsf6yu232zmzk5kscpv
 
 ## `wallet_compatible_derivation_cli` binary
 
-`wallet_compatible_derivation_cli` is a CLI tool (binary) for derivation of keys and account addresses from a Mnemonic ("Seed Phrase"), optional BIP39 passphrase, network id and an account index.
+`wallet_compatible_derivation_cli` is a CLI tool (binary) for derivation of keys and account addresses from a Mnemonic ("Seed Phrase"), optional BIP-39 passphrase, network id and an account index.
 
 The `wallet_compatible_derivation_cli` binary uses the `wallet_compatible_derivation` library.
 

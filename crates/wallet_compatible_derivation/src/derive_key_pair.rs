@@ -1,7 +1,7 @@
 use ed25519_dalek::{PublicKey, SecretKey};
 
 /// Derives an Ed255519 key pair on [`Curve25519`][curve],
-/// using the hierarchal deterministic BIP32 derivation `path`,
+/// using the hierarchal deterministic BIP-32 derivation `path`,
 /// and the `seed` of a hierarchal deterministic tree.
 ///
 /// [curve]: https://en.wikipedia.org/wiki/Curve25519

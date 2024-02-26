@@ -61,7 +61,7 @@ PublicKey: {}
         )
     }
 
-    /// Derives a simple [`Account`] using the `mnemonic` and BIP39 `passphrase` (can be the empty string) using the hierarchical deterministic derivation path `path`.
+    /// Derives a simple [`Account`] using the `mnemonic` and BIP-39 `passphrase` (can be the empty string) using the hierarchical deterministic derivation path `path`.
     ///
     /// See [`Account`] for more details, but in short it is an Address + key pair.
     pub fn derive(

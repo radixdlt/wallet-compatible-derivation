@@ -1,6 +1,6 @@
 //! `wallet_compatible_derivation` is a library for generating Radix Babylon Accounts.
 //!
-//! It derives key pairs for derivation paths using a BIP39 mnemonic
+//! It derives key pairs for derivation paths using a BIP-39 mnemonic
 //! and an optional passphrase. You can generate up to `2_147_483_648`
 //! accounts (UInt32::MAX / 2) - a seemingly endless amount of accounts,
 //! acting as an inspiration for the name `wallet_compatible_derivation`.
@@ -18,7 +18,7 @@
 //!	    0 // Account Index, 0 is first.
 //! );
 //!
-//! // 24 word BIP39 English mnemonic
+//! // 24 word BIP-39 English mnemonic
 //! let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 //!
 //! // Derive Babylon Radix account...

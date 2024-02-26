@@ -72,10 +72,10 @@ pub const fn unhardened(value: HDPathComponentValue) -> HDPathComponentValue {
     value - BIP32_HARDENED
 }
 
-/// The derivation "purpose" of the HDPath as per [BIP44][bip].
-/// N.B. the [`AccountPath`] is NOT strict BIP44, but we follow the
-/// pattern of IOTA and other projects which also use SLIP10, but
-/// chose to use a BIP44 base.
+/// The derivation "purpose" of the HDPath as per [BIP-44][bip].
+/// N.B. the [`AccountPath`] is NOT strict BIP-44, but we follow the
+/// pattern of IOTA and other projects which also use SLIP-10, but
+/// chose to use a BIP-44 base.
 ///
 /// [bip]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 pub const PURPOSE: HDPathComponentValue = harden(44);
