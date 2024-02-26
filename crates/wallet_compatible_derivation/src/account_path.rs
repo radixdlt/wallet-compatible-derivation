@@ -40,18 +40,15 @@ use crate::prelude::*;
 /// assert!("m/44H/1022H/1H/525H/1460H/1H".parse::<AccountPath>().is_ok());
 /// ```
 ///
-/// Trivia:
-/// If you wonder why the arbitrary values 525'/618' and 1460'/1678', they are
-/// in fact ASCII sums:
+/// Possible values for `entity_kind` include:
+/// * 525 - Pre-allocated Accounts
+/// * 618 - Pre-allocated Identities - AKA personas, which are used for [ROLA][rola]
 ///
-/// ```
-/// let ascii_sum = |s: &str| s.chars().into_iter().fold(0, |acc, c| acc + c as u64);
-/// assert_eq!(ascii_sum("ACCOUNT"), 525);
-/// assert_eq!(ascii_sum("IDENTITY"), 618);
-/// assert_eq!(ascii_sum("TRANSACTION_SIGNING"), 1460);
-/// assert_eq!(ascii_sum("AUTHENTICATION_SIGNING"), 1678);
-/// assert_eq!(ascii_sum("GETID"), 365);
-/// ```
+/// Possible values for `key_kind` include:
+/// * 1460 - Transaction Signing
+/// * 1678 - Authentication Signing such as [ROLA][rola]
+///
+/// See `test_asciisum` for the source of these numbers.
 ///
 /// [slip10]: https://github.com/satoshilabs/slips/blob/master/slip-0010.md
 /// [rola]: https://docs-babylon.radixdlt.com/main/frontend/rola.html

@@ -65,20 +65,18 @@ assert_eq!(second_account.address, "account_rdx129a9wuey40lducsf6yu232zmzk5kscpv
 
 ## `wallet_compatible_derivation_cli` binary
 
-`wallet_compatible_derivation_cli` is a CLI tool (binary) for derivation of keys and account address from a Mnemonic ("Seed Phrase"), optional BIP39 passphrase, network id and an account index.
+`wallet_compatible_derivation_cli` is a CLI tool (binary) for derivation of keys and account addresses from a Mnemonic ("Seed Phrase"), optional BIP39 passphrase, network id and an account index.
 
 The `wallet_compatible_derivation_cli` binary uses the `wallet_compatible_derivation` library.
 
-The CLI tool can be run in two different "modes":
-* Run without "pager" ☣️ VERY UNSAFE ☣️ alas convenient, should not be used with important mnemonics[^1]. See below for details, but in short all input and output is saved in your shell history, just like `cat`.
-* Run with "pager"  ⚠️ still unsafe ⚠️ this is the default mode. See below for details, but in short, when the tool is run with a pager, just like `less`, the input/output of the program is not visibly in history, but depending on your terminal secrets might still be retained!
-
-[^1]: By "important" we mean a mnemonic which controls accounts with (lots of) funds.
+The CLI tool can be run in two different modes:
+* Run without "pager", where the arguments are provided directly, like the `cat` command. Whilst convenient, this mode is ☣️ particularly UNSAFE ☣️, because sensitives inputs such as the mnemonic, and outputs such as the private keys, are stored in your shell history. We advise against using this mode for mnemonics protecting assets.
+* Run with "pager", where the arguments are passed through a prompt, and outputs shown inside the application, like `less`. This is the default mode, and although inputs/outputs are not stored in the shell history, be warned that sensitive details may still live in memory of the terminal/application.
 
 
 ## pager
 
-The `pager` mode is the prefered mode of `wallet_compatible_derivation_cli` binary since history is not stored in plaintext, it is an interactive tool asking for input while being run (similar to `gh auth login`), instead of passing input using arguments, therefor the input will not be part of your shell history. The output of the binary is shown in a pager, just like `less` and when the pager is quit, the output is not part of your shell history. But depending on your terminal application, the secrets might still be part of some process! So do not assume using the CLI tool is as safe as inputting the mnemonic into an airgapped machine, it is not!
+The `pager` mode is the preferred mode of `wallet_compatible_derivation_cli` binary since history is not stored in plaintext, it is an interactive tool asking for input while being run (similar to `gh auth login`), instead of passing input using arguments, therefore the input will not be part of your shell history. The output of the binary is shown in a pager, just like `less` and when the pager is quit, the output is not part of your shell history. Be warned that sensitive details may still live in the memory of the terminal/application.
 
 ```sh
 wallet_compatible_derivation_cli pager --include-private-key
@@ -98,8 +96,8 @@ The `--include-private-key` is optional, and when specified the output will disp
 ## no-pager
 
 > [!IMPORTANT]  
-> This is not safe, your mnemonic and your derived keys WILL be present in your shells command history and output.
-> ONLY Use this for mnemonics and accounts you really do not care about.
+> In this mode, your mnemonic and your derived keys will be present in your shell's command history and output.
+> ONLY use this for mnemonics and accounts you really do not care about.
 
 ```sh
 wallet_compatible_derivation_cli --include-private-key no-pager \
@@ -121,24 +119,20 @@ wallet_compatible_derivation_cli no-pager --help
 # Security
 
 > [!IMPORTANT]  
-> Beware of key-loggers! This software does not protect against any key-logging 
-> malware your computer might be infected with. Even in `pager` mode, you are 
-> asked to type in your mnemonic and if your computer is infected by a key-logger 
-> malware you might loose all your funds.
+> Beware of key-loggers or spyware running on your machine! This software does not protect against any key-logging malware your computer might be infected with.
 >
-> Beware of secrets retained by terminal app! Even in `pager` mode secrets might be kept in memory somewhere, depending on your terminal app.
+> Even in `pager` mode, you are asked to type in your mnemonic and if your computer is infected by a key-logger malware you might lose all your funds.
+> In either mode, spyware may be able to read secrets out of the memory of the terminal application.
 
 Future iterations of this software might implement an interactive "picker" of characters/words in randomized order to allow safe input of your mnemonic, but there is no planned release date for such a few feature.
 
 All sensitive types of the `wallet_compatible_derivation` library implement the traits
-`ZeroizeOnDrop` and `Zeroize` part of [the `zeroize` crate](https://docs.rs/zeroize/1.7.0/zeroize/) meaning that the secrets are/can easily be "zeroed out"/wiped, ensuring that those secrets are not kept around anywhere in memory. 
+`ZeroizeOnDrop` and `Zeroize` part of [the `zeroize` crate](https://docs.rs/zeroize/1.7.0/zeroize/) meaning that the secrets are "zeroed out"/wiped when dropped, ensuring that those secrets are not kept around in memory. 
 
-`wallet_compatible_derivation_cli` explicitly zeroize the mnemonic you input and all private keys, derivation paths and account addresses it derives. 
-
-Verify this claim by looking at the end of the [`main` function here][cli_main].
+The `wallet_compatible_derivation_cli` explicitly zeroize the mnemonic you input and all private keys, derivation paths and account addresses it derives. See for example the [`main` function here][cli_main].
 
 > [!IMPORTANT]  
-> `Zeroize` of secrets does NOT guarantee all secrets are wiped when using the binary `wallet_compatible_derivation_cli` even  with `pager` mode (and especially not in `no-pager` mode!)! It matters not that the secrets have been wiped from memory if they are still retained by the terminals process somehow (or stored in plaintext in shell history if you use `no-pager` mode).
+> Use of `Zeroize` on secrets inside this library cannot ensure the secrets are wiped from other applications on your machine. Calling applications or terminals may keep their own copies of the input/output in memory, or they may be on your clipboard or in shell history if you use `no-pager` mode.
 
 # License
 
