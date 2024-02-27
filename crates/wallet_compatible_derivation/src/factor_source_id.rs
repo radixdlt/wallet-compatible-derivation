@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use radix_engine_common::crypto::{blake2b_256_hash, IsHash};
 
-/// A safe to use hex encoding of the hash of a public key at a special node in your BIP39 Seed,
+/// A safe to use hex encoding of the hash of a public key at a special node in your BIP-39 Seed,
 /// This ID is used to identify that two accounts have been derived from the same mnemonic.
 /// Since it is the hash of a public key it does not reveal any secrets.
 /// And the public key is not the public key of any account signing key, a

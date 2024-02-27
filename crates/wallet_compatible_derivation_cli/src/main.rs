@@ -53,7 +53,6 @@ fn paged() {
 fn main() {
     let cli = Cli::parse();
     let command = cli.command.unwrap_or(Commands::Pager);
-    let use_pager = command.is_using_pager();
     let mut config = match command {
         Commands::NoPager(c) => Ok(c),
         Commands::Pager => {
@@ -64,7 +63,6 @@ fn main() {
     .expect("Valid config");
 
     let include_private_key = cli.include_private_key;
-    let mut zeroized_accounts = true;
 
     let start = config.start;
     let count = config.count as u32;
@@ -74,14 +72,9 @@ fn main() {
         let mut account = Account::derive(&config.mnemonic, &config.passphrase, &account_path);
         print_account(&account, include_private_key);
         account.zeroize();
-        zeroized_accounts &= account.is_zeroized();
     }
 
     config.zeroize();
-
-    if use_pager && config.mnemonic.is_zeroized() && zeroized_accounts {
-        print_secrets_safe()
-    }
 
     drop(config);
 }
@@ -101,16 +94,4 @@ fn print_account(account: &Account, include_private_key: bool) {
     ]
     .join("\n");
     println!("\n{output}");
-}
-
-fn print_secrets_safe() {
-    let delimiter = "🛡️ ".repeat(WIDTH);
-    let safe = [
-        "\n\n",
-        &delimiter,
-        "🔐 All sensitive data have been zeroized, your secrets are safe 🔐",
-        &delimiter,
-    ]
-    .join("\n");
-    println!("{safe}")
 }

@@ -8,9 +8,9 @@ This repo is a package containing two crates - a library named `wallet_compatibl
 >
 > You are responsible for reading the Security and License sections of this README respectively to understand the risks of using this software.
 
-This software created Radix Babylon account address from hierarchical deterministic key pairs, derived using wallet compatible derivation paths which are compatible with the [Radix Wallet][wallet] available on iOS and Android. This means that the same (KeyPair, Address) tuples, contiguously, will be created by this software and the Radix Wallet software, for any given (Mnemonic, BIP39 Passphrase, NetworkID) triple as input. Or in other words, given Mnemonic `M`, no BPI39 passphrase, if the Radix Wallet will create account `A, B, C` at indices `0`, `1` and `2`, so will this software.
+This software created Radix Babylon account address from hierarchical deterministic key pairs, derived using wallet compatible derivation paths which are compatible with the [Radix Wallet][wallet] available on iOS and Android. This means that the same (KeyPair, Address) tuples, contiguously, will be created by this software and the Radix Wallet software, for any given (Mnemonic, BIP-39 Passphrase, NetworkID) triple as input. Or in other words, given Mnemonic `M` and no BIP-39 passphrase, if the Radix Wallet will create account `A, B, C` at indices `0`, `1` and `2`, so will this software.
 
-In order to stay compatible with the Radix Wallet, this software requires 24 words mnemonics, and to be fully compatible, best not use any BIP39 passphrase (use empty string).
+In order to stay compatible with the Radix Wallet, this software requires 24 words mnemonics, and to be fully compatible, do not use any BIP-39 passphrase (use an empty string).
 
 The cryptographic curve used is [Curve25519][curve] (again, just like the Radix Wallet), and derivation scheme is [SLIP-10][slip10] - and extension of [BIP-32][b32] made to support other curves than "the Bitcoin curve". The derivation path scheme is inspired by [BIP-44][b44], but is more advanced (see [`AccountPath`][account_path] for details), and is built for maximum key isolation, for security.
 
@@ -32,13 +32,13 @@ let path = AccountPath::new(
 	0 // Account Index, 0 is first.
 );
 
-// 24 word BIP39 English mnemonic
+// 24 word BIP-39 English mnemonic
 let mnemonic: Mnemonic24Words = "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap();
 
 // Derive Babylon Radix account...
 let account = Account::derive(
 	&mnemonic, 
-	"radix", // BIP39 passphrase (can be empty string)
+	"radix", // BIP-39 passphrase (can be empty string)
 	&path
 );
 
@@ -65,20 +65,18 @@ assert_eq!(second_account.address, "account_rdx129a9wuey40lducsf6yu232zmzk5kscpv
 
 ## `wallet_compatible_derivation_cli` binary
 
-`wallet_compatible_derivation_cli` is a CLI tool (binary) for derivation of keys and account address from a Mnemonic ("Seed Phrase"), optional BIP39 passphrase, network id and an account index.
+`wallet_compatible_derivation_cli` is a CLI tool (binary) for derivation of keys and account addresses from a Mnemonic ("Seed Phrase"), optional BIP-39 passphrase, network id and an account index.
 
 The `wallet_compatible_derivation_cli` binary uses the `wallet_compatible_derivation` library.
 
-The CLI tool can be run in two different "modes":
-* Run with "pager" - safe - this is the default mode. See below for details, but in short, when the tool is run with a pager, no history of input nor input is saved in your bash/zsh/shell history, just like `less`
-* Run without "pager" ⚠️ unsafe ⚠️ alas convenient, should not be used with important mnemonics[^1]. See below for details, but in short all input and output is saved in your shell history, just like `cat`.
-
-[^1]: By "important" we mean a mnemonic which controls accounts with (lots of) funds.
+The CLI tool can be run in two different modes:
+* Run without "pager", where the arguments are provided directly, like the `cat` command. Whilst convenient, this mode is ☣️ particularly UNSAFE ☣️, because sensitives inputs such as the mnemonic, and outputs such as the private keys, are stored in your shell history. We advise against using this mode for mnemonics protecting assets.
+* Run with "pager", where the arguments are passed through a prompt, and outputs shown inside the application, like `less`. This is the default mode, and although inputs/outputs are not stored in the shell history, be warned that sensitive details may still live in memory of the terminal/application.
 
 
-## pager
+### pager
 
-The `pager` mode is the only safe mode of `wallet_compatible_derivation_cli` binary, it is an interactive tool asking for input while being run (similar to `gh auth login`), instead of passing input using arguments, therefor the input will not be part of your shell history. The output of the binary is shown in a pager, just like `less` and when the pager is quit, the output is not part of your shell history.
+The `pager` mode is the preferred mode of `wallet_compatible_derivation_cli` binary since history is not stored in plaintext, it is an interactive tool asking for input while being run (similar to `gh auth login`), instead of passing input using arguments, therefore the input will not be part of your shell history. The output of the binary is shown in a pager, just like `less` and when the pager is quit, the output is not part of your shell history. Be warned that sensitive details may still live in the memory of the terminal/application.
 
 ```sh
 wallet_compatible_derivation_cli pager --include-private-key
@@ -92,14 +90,14 @@ wallet_compatible_derivation_cli --include-private-key
 
 The `--include-private-key` is optional, and when specified the output will display the private keys of each derived account. Since you are running in `pager`, those private keys are not part of your shell history.
 
-### Demo
+#### Demo
 ![demo_pager](./.github/readme_assets/cli_pager.gif)
 
-## no-pager
+### no-pager
 
 > [!IMPORTANT]  
-> This is not safe, your mnemonic and your derived keys WILL be present in your shells command history and output.
-> ONLY Use this for mnemonics and accounts you really do not care about.
+> In this mode, your mnemonic and your derived keys will be present in your shell's command history and output.
+> ONLY use this for mnemonics and accounts you really do not care about.
 
 ```sh
 wallet_compatible_derivation_cli --include-private-key no-pager \
@@ -112,31 +110,37 @@ wallet_compatible_derivation_cli --include-private-key no-pager \
 
 Omit `--include-private-key` if you don't want to print out the private keys of the derived accounts.
 
-### Help
+#### Help
 
 ```sh
 wallet_compatible_derivation_cli no-pager --help
 ```
 
+## Installation
+
+Easiest way to install the `wallet_compatible_derivation_cli` binary is to [install Rust][get_rust], and run this one liner:
+
+```sh
+cargo install --git https://github.com/radixdlt/wallet-compatible-derivation
+```
+
 # Security
 
 > [!IMPORTANT]  
-> Beware of key-loggers! This software does not protect against any key-logging 
-> malware your computer might be infected with. Even in `pager` mode, you are 
-> asked to type in your mnemonic and if your computer is infected by a key-logger 
-> malware you might loose all your funds.
+> Beware of key-loggers or spyware running on your machine! This software does not protect against any key-logging malware your computer might be infected with.
+>
+> Even in `pager` mode, you are asked to type in your mnemonic and if your computer is infected by a key-logger malware you might lose all your funds.
+> In either mode, spyware may be able to read secrets out of the memory of the terminal application.
 
 Future iterations of this software might implement an interactive "picker" of characters/words in randomized order to allow safe input of your mnemonic, but there is no planned release date for such a few feature.
 
 All sensitive types of the `wallet_compatible_derivation` library implement the traits
-`ZeroizeOnDrop` and `Zeroize` part of [the `zeroize` crate](https://docs.rs/zeroize/1.7.0/zeroize/) meaning that the secrets are/can easily be "zeroed out"/wiped, ensuring that those secrets are not kept around anywhere in memory. 
+`ZeroizeOnDrop` and `Zeroize` part of [the `zeroize` crate](https://docs.rs/zeroize/1.7.0/zeroize/) meaning that the secrets are "zeroed out"/wiped when dropped, ensuring that those secrets are not kept around in memory. 
 
-`wallet_compatible_derivation_cli` explicitly zeroize the mnemonic you input and all private keys, derivation paths and account addresses it derives. 
-
-Verify this claim by looking at the end of the [`main` function here][cli_main].
+The `wallet_compatible_derivation_cli` explicitly zeroize the mnemonic you input and all private keys, derivation paths and account addresses it derives. See for example the [`main` function here][cli_main].
 
 > [!IMPORTANT]  
-> `Zeroize` of secrets does NOT help you if you use the binary `wallet_compatible_derivation_cli` with `no-pager` mode! It matters not that the secrets have been wiped from memory if they are saved plain text in your shell's history.
+> Use of `Zeroize` on secrets inside this library cannot ensure the secrets are wiped from other applications on your machine. Calling applications or terminals may keep their own copies of the input/output in memory, or they may be on your clipboard or in shell history if you use `no-pager` mode.
 
 # License
 
@@ -159,3 +163,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [cli_main]: crates/wallet_compatible_derivation_cli/src/main.rs
 [b32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 [b44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+[get_rust]: https://www.rust-lang.org/tools/install

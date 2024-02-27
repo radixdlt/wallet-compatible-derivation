@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use itertools::Itertools as _;
 
-/// A [BIP32][bip] hierarchical deterministic derivation path of depth `N`,
+/// A [BIP-32][bip] hierarchical deterministic derivation path of depth `N`,
 /// with which we can build a Radix Wallet compatible `AccountPath`.
 ///
 /// [bip]: https://github.com/iqlusioninc/crates/tree/main/bip32
@@ -25,7 +25,7 @@ impl<const N: usize> TryFrom<slip10::path::BIP32Path> for BIP32Path<N> {
 
 impl<const N: usize> std::fmt::Display for BIP32Path<N> {
     /// Formats a `BIP32Path` with `N` many levels into a string joining each
-    /// level with `/`, and printing `H` if it was hardened, as per BIP32 standard
+    /// level with `/`, and printing `H` if it was hardened, as per BIP-32 standard
     /// notation.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.to_bip32_string())
@@ -34,7 +34,7 @@ impl<const N: usize> std::fmt::Display for BIP32Path<N> {
 
 impl<const N: usize> BIP32Path<N> {
     /// Formats a `BIP32Path` with `N` many levels into a string joining each
-    /// level with `/`, and printing `H` if it was hardened, as per BIP32 standard
+    /// level with `/`, and printing `H` if it was hardened, as per BIP-32 standard
     /// notation.
     pub fn to_bip32_string(&self) -> String {
         let tail = self
@@ -48,10 +48,10 @@ impl<const N: usize> BIP32Path<N> {
 
     pub(crate) fn inner(&self) -> slip10::path::BIP32Path {
         slip10::path::BIP32Path::from_str(&self.to_bip32_string())
-            .expect("Should only have valid BIP32 path")
+            .expect("Should only have valid BIP-32 path")
     }
 
-    /// Returns each path component, layer, of the BIP32 path as a vector.
+    /// Returns each path component, layer, of the BIP-32 path as a vector.
     pub fn components(&self) -> Vec<HDPathComponentValue> {
         self.clone()
             .into_iter()
@@ -62,7 +62,7 @@ impl<const N: usize> BIP32Path<N> {
 impl<const N: usize> FromStr for BIP32Path<N> {
     type Err = crate::Error;
 
-    /// Tries to parse a BIP32 string into a BIP32Path.
+    /// Tries to parse a BIP-32 string into a BIP32Path.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         slip10::path::BIP32Path::from_str(s)
             .map_err(|_| Error::InvalidBIP32Path(s.to_string()))
