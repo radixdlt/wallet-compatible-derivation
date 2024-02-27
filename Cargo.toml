@@ -1,8 +1,10 @@
-[package]
-name = "verktyg"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+resolver = "2"
+members = [
+    "crates/wallet_compatible_derivation",
+    "crates/wallet_compatible_derivation_cli",
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+[workspace.dependencies]
+thiserror = { version = "1.0.56" }
+zeroize = { version = "1.7.0", features = ["zeroize_derive", "derive"] }

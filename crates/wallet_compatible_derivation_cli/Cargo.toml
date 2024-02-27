@@ -1,0 +1,11 @@
+[package]
+name = "wallet_compatible_derivation_cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4.2", features = ["derive"] }
+inquire = { version = "0.6.2", features = ["editor"] }
+pager = "0.16.1"
+wallet_compatible_derivation = { path = "../wallet_compatible_derivation" }
+zeroize = { workspace = true }
