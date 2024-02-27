@@ -74,7 +74,7 @@ The CLI tool can be run in two different modes:
 * Run with "pager", where the arguments are passed through a prompt, and outputs shown inside the application, like `less`. This is the default mode, and although inputs/outputs are not stored in the shell history, be warned that sensitive details may still live in memory of the terminal/application.
 
 
-## pager
+### pager
 
 The `pager` mode is the preferred mode of `wallet_compatible_derivation_cli` binary since history is not stored in plaintext, it is an interactive tool asking for input while being run (similar to `gh auth login`), instead of passing input using arguments, therefore the input will not be part of your shell history. The output of the binary is shown in a pager, just like `less` and when the pager is quit, the output is not part of your shell history. Be warned that sensitive details may still live in the memory of the terminal/application.
 
@@ -90,10 +90,10 @@ wallet_compatible_derivation_cli --include-private-key
 
 The `--include-private-key` is optional, and when specified the output will display the private keys of each derived account. Since you are running in `pager`, those private keys are not part of your shell history.
 
-### Demo
+#### Demo
 ![demo_pager](./.github/readme_assets/cli_pager.gif)
 
-## no-pager
+### no-pager
 
 > [!IMPORTANT]  
 > In this mode, your mnemonic and your derived keys will be present in your shell's command history and output.
@@ -110,10 +110,18 @@ wallet_compatible_derivation_cli --include-private-key no-pager \
 
 Omit `--include-private-key` if you don't want to print out the private keys of the derived accounts.
 
-### Help
+#### Help
 
 ```sh
 wallet_compatible_derivation_cli no-pager --help
+```
+
+## Installation
+
+Easiest way to install the `wallet_compatible_derivation_cli` binary is to [install Rust][get_rust], and run this one liner:
+
+```sh
+cargo install --git https://github.com/radixdlt/wallet-compatible-derivation
 ```
 
 # Security
@@ -155,3 +163,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [cli_main]: crates/wallet_compatible_derivation_cli/src/main.rs
 [b32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 [b44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+[get_rust]: https://www.rust-lang.org/tools/install
