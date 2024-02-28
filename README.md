@@ -144,6 +144,8 @@ The `wallet_compatible_derivation_cli` explicitly zeroize the mnemonic you input
 
 # License
 
+The `wallet-compatible-derivation` code is released under [Radix Modified MIT License](./LICENSE.txt).
+
 ```
 Copyright 2023 Radix Publishing Limited
 
