@@ -14,7 +14,7 @@ In order to stay compatible with the Radix Wallet, this software requires 24 wor
 
 The cryptographic curve used is [Curve25519][curve] (again, just like the Radix Wallet), and derivation scheme is [SLIP-10][slip10] - and extension of [BIP-32][b32] made to support other curves than "the Bitcoin curve". The derivation path scheme is inspired by [BIP-44][b44], but is more advanced (see [`AccountPath`][account_path] for details), and is built for maximum key isolation, for security.
 
-Address derivation is using [Radix-Engine-Toolkit][ret].
+Address derivation is using the [Radix-Engine-Toolkit][ret].
 
 Make sure to read the Security section below for security details.
 
@@ -166,3 +166,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [b32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 [b44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 [get_rust]: https://www.rust-lang.org/tools/install
+[ret]: https://docs.radixdlt.com/docs/radix-engine-toolkit
