@@ -1,4 +1,4 @@
-use radix_engine_common::network::NetworkDefinition;
+use radix_common::prelude::NetworkDefinition;
 use strum_macros::{Display, EnumString};
 
 use crate::prelude::*;
@@ -36,7 +36,7 @@ impl NetworkID {
 }
 
 impl TryFrom<HDPathComponentValue> for NetworkID {
-    type Error = crate::Error;
+    type Error = Error;
 
     /// Tries to create a `NetworkID` from a path component, the value
     /// passed MUST be non-hardened / unhardened.
