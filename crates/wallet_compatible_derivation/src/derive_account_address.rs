@@ -1,9 +1,7 @@
 use crate::prelude::*;
 
 use ed25519_dalek::PublicKey;
-use radix_engine_common::{
-    address::AddressBech32Encoder, crypto::Ed25519PublicKey, types::ComponentAddress,
-};
+use radix_common::prelude::*;
 
 /// Creates a bech32m encoded Radix canonical address from an Ed25519 PublicKey and a
 /// Radix `NetworkID`.
