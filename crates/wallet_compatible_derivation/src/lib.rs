@@ -70,6 +70,7 @@ pub mod prelude {
     pub(crate) use crate::derive_key_pair::*;
     pub(crate) use std::str::FromStr;
     pub(crate) use zeroize::{Zeroize, ZeroizeOnDrop};
+    pub(crate) use radix_common::network::NetworkDefinition as ScryptoNetworkDefinition;
 }
 
 pub use prelude::*;
