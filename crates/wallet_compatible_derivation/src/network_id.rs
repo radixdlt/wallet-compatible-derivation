@@ -16,35 +16,35 @@ use crate::prelude::*;
 pub enum NetworkID {
     /// The Radix mainnet.
     #[strum(ascii_case_insensitive)]
-    Mainnet,
+    Mainnet = 0x01,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Stokenet,
+    Stokenet = 0x02,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Enkinet,
+    Enkinet = 0x21,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Hammunet,
+    Hammunet = 0x22,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Dumunet,
+    Dumunet = 0x25,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Mardunet,
+    Mardunet = 0x24,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Gilganet,
+    Gilganet = 0x20,
 
     /// A public facing testnet.
     #[strum(ascii_case_insensitive)]
-    Nergalnet
+    Nergalnet = 0x23
 }
 impl NetworkID {
     /// Returns a collection of all networks this software support.
