@@ -33,14 +33,6 @@ enum Commands {
     NoPager(Config),
     Pager,
 }
-impl Commands {
-    fn is_using_pager(&self) -> bool {
-        match self {
-            Commands::NoPager(_) => false,
-            Commands::Pager => true,
-        }
-    }
-}
 
 fn paged() {
     Pager::new().setup();

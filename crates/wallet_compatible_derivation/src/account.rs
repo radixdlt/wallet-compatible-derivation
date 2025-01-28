@@ -91,6 +91,13 @@ PublicKey: {}
     }
 }
 
+#[cfg(test)]
+impl Mnemonic24Words {
+    pub(crate) fn test_2() -> Self {
+        "device phone sign source sample other device sample other device sample other device sample other device sample other device sample other device other paddle".parse().unwrap()
+    }
+}
+
 // Test vectors from Swift lib, see commit:
 // https://github.com/radixdlt/babylon-wallet-ios/commit/f5f654a40b2afa48820919360f2e8d2f00ebe63e
 // and from Gist

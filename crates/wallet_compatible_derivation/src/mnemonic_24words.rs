@@ -66,12 +66,6 @@ impl TestValue for Mnemonic24Words {
 }
 
 impl Mnemonic24Words {
-    pub fn test_2() -> Self {
-        "device phone sign source sample other device sample other device sample other device sample other device sample other device sample other device other paddle".parse().unwrap()
-    }
-}
-
-impl Mnemonic24Words {
     pub const WORD_COUNT: usize = 24;
     pub fn to_seed(&self, passphrase: impl AsRef<str>) -> [u8; 64] {
         self.wrapped().to_seed(passphrase.as_ref())
