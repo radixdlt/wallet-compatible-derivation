@@ -34,7 +34,7 @@ impl TryFrom<bip39::Mnemonic> for Mnemonic24Words {
 }
 
 impl Mnemonic24Words {
-    /// Formats 24 words as a single mnemonic phrase, with space (" ") joining 
+    /// Formats 24 words as a single mnemonic phrase, with space (" ") joining
     /// the words.
     pub fn phrase(&self) -> String {
         self.wrapped().to_string()
@@ -59,6 +59,7 @@ impl TestValue for Mnemonic24Words {
     fn test_0() -> Self {
         "bright club bacon dinner achieve pull grid save ramp cereal blush woman humble limb repeat video sudden possible story mask neutral prize goose mandate".parse().unwrap()
     }
+
     fn test_1() -> Self {
         "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo vote".parse().unwrap()
     }
